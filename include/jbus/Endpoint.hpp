@@ -89,19 +89,19 @@ class KawasedoChallenge
     u32 x64_totalBytes;
     bool m_started = true;
 
-    void F23(EndpointLocal& endpoint, EJoyReturn status);
-    void F25(EndpointLocal& endpoint, EJoyReturn status);
-    void F27(EndpointLocal& endpoint, EJoyReturn status);
-    void F29(EndpointLocal& endpoint, EJoyReturn status);
+    void F23(ThreadLocalEndpoint& endpoint, EJoyReturn status);
+    void F25(ThreadLocalEndpoint& endpoint, EJoyReturn status);
+    void F27(ThreadLocalEndpoint& endpoint, EJoyReturn status);
+    void F29(ThreadLocalEndpoint& endpoint, EJoyReturn status);
     void GBAX02();
-    void GBAX01(EndpointLocal& endpoint);
-    void F31(EndpointLocal& endpoint, EJoyReturn status);
-    void F33(EndpointLocal& endpoint, EJoyReturn status);
-    void F35(EndpointLocal& endpoint, EJoyReturn status);
-    void F37(EndpointLocal& endpoint, EJoyReturn status);
-    void F39(EndpointLocal& endpoint, EJoyReturn status);
+    void GBAX01(ThreadLocalEndpoint& endpoint);
+    void F31(ThreadLocalEndpoint& endpoint, EJoyReturn status);
+    void F33(ThreadLocalEndpoint& endpoint, EJoyReturn status);
+    void F35(ThreadLocalEndpoint& endpoint, EJoyReturn status);
+    void F37(ThreadLocalEndpoint& endpoint, EJoyReturn status);
+    void F39(ThreadLocalEndpoint& endpoint, EJoyReturn status);
 
-    auto bindThis(void(KawasedoChallenge::*ptmf)(EndpointLocal&, EJoyReturn))
+    auto bindThis(void(KawasedoChallenge::*ptmf)(ThreadLocalEndpoint&, EJoyReturn))
     {
         return std::bind(ptmf, this, std::placeholders::_1, std::placeholders::_2);
     }
@@ -121,7 +121,7 @@ public:
 
 class Endpoint
 {
-    friend class EndpointLocal;
+    friend class ThreadLocalEndpoint;
 
     enum EJoybusCmds
     {
@@ -169,7 +169,7 @@ class Endpoint
     size_t runBuffer(u8* buffer, u64& remTicks, EWaitResp resp);
     bool idleGetStatus(u64& remTicks);
     void transferProc();
-    void transferWakeup(EndpointLocal& endpoint, u8 status);
+    void transferWakeup(ThreadLocalEndpoint& endpoint, u8 status);
 
     auto bindSync()
     {
@@ -196,11 +196,11 @@ public:
     ~Endpoint();
 };
 
-class EndpointLocal
+class ThreadLocalEndpoint
 {
     friend class Endpoint;
     Endpoint& m_ep;
-    EndpointLocal(Endpoint& ep) : m_ep(ep) {}
+    ThreadLocalEndpoint(Endpoint& ep) : m_ep(ep) {}
 public:
     EJoyReturn GBAGetStatusAsync(u8* status, FGBACallback&& callback);
     EJoyReturn GBAResetAsync(u8* status, FGBACallback&& callback);

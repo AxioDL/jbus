@@ -1,9 +1,11 @@
 #include "jbus/Endpoint.hpp"
 
+#define LOG_TRANSFER 0
+
 namespace jbus
 {
 
-void KawasedoChallenge::F23(EndpointLocal& endpoint, EJoyReturn status)
+void KawasedoChallenge::F23(ThreadLocalEndpoint& endpoint, EJoyReturn status)
 {
     if (status != GBA_READY ||
         (status = endpoint.GBAResetAsync(x10_statusPtr,
@@ -18,7 +20,7 @@ void KawasedoChallenge::F23(EndpointLocal& endpoint, EJoyReturn status)
     }
 }
 
-void KawasedoChallenge::F25(EndpointLocal& endpoint, EJoyReturn status)
+void KawasedoChallenge::F25(ThreadLocalEndpoint& endpoint, EJoyReturn status)
 {
     if (status == GBA_READY)
         if (*x10_statusPtr != GBA_JSTAT_SEND)
@@ -37,7 +39,7 @@ void KawasedoChallenge::F25(EndpointLocal& endpoint, EJoyReturn status)
     }
 }
 
-void KawasedoChallenge::F27(EndpointLocal& endpoint, EJoyReturn status)
+void KawasedoChallenge::F27(ThreadLocalEndpoint& endpoint, EJoyReturn status)
 {
     if (status == GBA_READY)
         if (*x10_statusPtr != (GBA_JSTAT_PSF0 | GBA_JSTAT_SEND))
@@ -56,7 +58,7 @@ void KawasedoChallenge::F27(EndpointLocal& endpoint, EJoyReturn status)
     }
 }
 
-void KawasedoChallenge::F29(EndpointLocal& endpoint, EJoyReturn status)
+void KawasedoChallenge::F29(ThreadLocalEndpoint& endpoint, EJoyReturn status)
 {
     if (status != GBA_READY)
     {
@@ -83,7 +85,7 @@ void KawasedoChallenge::GBAX02()
     xf8_dspHmac.ProcessGBACrypto();
 }
 
-void KawasedoChallenge::GBAX01(EndpointLocal& endpoint)
+void KawasedoChallenge::GBAX01(ThreadLocalEndpoint& endpoint)
 {
     x58_currentKey = xf8_dspHmac.x20_publicKey;
     x5c_initMessage = xf8_dspHmac.x24_authInitCode;
@@ -116,7 +118,7 @@ void KawasedoChallenge::GBAX01(EndpointLocal& endpoint)
     }
 }
 
-void KawasedoChallenge::F31(EndpointLocal& endpoint, EJoyReturn status)
+void KawasedoChallenge::F31(ThreadLocalEndpoint& endpoint, EJoyReturn status)
 {
     if (status != GBA_READY)
     {
@@ -129,7 +131,9 @@ void KawasedoChallenge::F31(EndpointLocal& endpoint, EJoyReturn status)
         return;
     }
 
+#if LOG_TRANSFER
     printf("PROG [%d/%d]\n", x34_bytesSent, x64_totalBytes);
+#endif
     if (x30_justStarted)
     {
         x30_justStarted = 0;
@@ -261,7 +265,7 @@ void KawasedoChallenge::F31(EndpointLocal& endpoint, EJoyReturn status)
     }
 }
 
-void KawasedoChallenge::F33(EndpointLocal& endpoint, EJoyReturn status)
+void KawasedoChallenge::F33(ThreadLocalEndpoint& endpoint, EJoyReturn status)
 {
     if (status != GBA_READY ||
         (status = endpoint.GBAGetStatusAsync(x10_statusPtr,
@@ -276,7 +280,7 @@ void KawasedoChallenge::F33(EndpointLocal& endpoint, EJoyReturn status)
     }
 }
 
-void KawasedoChallenge::F35(EndpointLocal& endpoint, EJoyReturn status)
+void KawasedoChallenge::F35(ThreadLocalEndpoint& endpoint, EJoyReturn status)
 {
     if (status == GBA_READY)
         if (*x10_statusPtr & (GBA_JSTAT_FLAGS_MASK | GBA_JSTAT_RECV))
@@ -320,7 +324,7 @@ void KawasedoChallenge::F35(EndpointLocal& endpoint, EJoyReturn status)
     }
 }
 
-void KawasedoChallenge::F37(EndpointLocal& endpoint, EJoyReturn status)
+void KawasedoChallenge::F37(ThreadLocalEndpoint& endpoint, EJoyReturn status)
 {
     if (status != GBA_READY ||
         (status = endpoint.GBAWriteAsync(x18_readBuf, x10_statusPtr,
@@ -335,10 +339,10 @@ void KawasedoChallenge::F37(EndpointLocal& endpoint, EJoyReturn status)
     }
 }
 
-void KawasedoChallenge::F39(EndpointLocal& endpoint, EJoyReturn status)
+void KawasedoChallenge::F39(ThreadLocalEndpoint& endpoint, EJoyReturn status)
 {
     if (status == GBA_READY)
-        *x10_statusPtr = GBA_READY;
+        *x10_statusPtr = 0;
 
     x28_ticksAfterXf = 0;
 
@@ -436,11 +440,13 @@ void Endpoint::send(const u8* buffer)
     {
         m_running = false;
     }
+#if LOG_TRANSFER
     else
     {
         printf("Send %02x [> %02x%02x%02x%02x] (%lu)\n", buffer[0],
                buffer[1], buffer[2], buffer[3], buffer[4], sentBytes);
     }
+#endif
 
     m_timeCmdSent = GetGCTicks();
 }
@@ -483,6 +489,7 @@ size_t Endpoint::seceive(u8* buffer)
     if (recvBytes > 5)
         recvBytes = 5;
 
+#if LOG_TRANSFER
     if (recvBytes > 0)
     {
         if (m_lastCmd == CMD_STATUS || m_lastCmd == CMD_RESET)
@@ -498,6 +505,7 @@ size_t Endpoint::seceive(u8* buffer)
                    (u8)buffer[3], (u8)buffer[4], recvBytes);
         }
     }
+#endif
 
     return recvBytes;
 }
@@ -542,7 +550,9 @@ bool Endpoint::idleGetStatus(u64& remTicks)
 
 void Endpoint::transferProc()
 {
+#if LOG_TRANSFER
     printf("Starting JoyBus transfer thread for channel %d\n", m_chan);
+#endif
 
     std::unique_lock<std::mutex> lk(m_syncLock);
     while (m_running)
@@ -596,7 +606,7 @@ void Endpoint::transferProc()
                     {
                         FGBACallback cb = std::move(m_callback);
                         m_callback = {};
-                        EndpointLocal ep(*this);
+                        ThreadLocalEndpoint ep(*this);
                         cb(ep, xferStatus);
                     }
 
@@ -628,10 +638,13 @@ void Endpoint::transferProc()
     m_syncCv.notify_all();
     m_dataSocket.close();
     m_clockSocket.close();
+
+#if LOG_TRANSFER
     printf("Stopping JoyBus transfer thread for channel %d\n", m_chan);
+#endif
 }
 
-void Endpoint::transferWakeup(EndpointLocal& endpoint, u8 status)
+void Endpoint::transferWakeup(ThreadLocalEndpoint& endpoint, u8 status)
 {
     m_syncCv.notify_all();
 }
@@ -819,7 +832,7 @@ Endpoint::Endpoint(u8 chan, net::Socket&& data, net::Socket&& clock)
 
 Endpoint::~Endpoint() { stop(); }
 
-EJoyReturn EndpointLocal::GBAGetStatusAsync(u8* status, FGBACallback&& callback)
+EJoyReturn ThreadLocalEndpoint::GBAGetStatusAsync(u8* status, FGBACallback&& callback)
 {
     if (m_ep.m_cmdIssued)
         return GBA_NOT_READY;
@@ -832,7 +845,7 @@ EJoyReturn EndpointLocal::GBAGetStatusAsync(u8* status, FGBACallback&& callback)
     return GBA_READY;
 }
 
-EJoyReturn EndpointLocal::GBAResetAsync(u8* status, FGBACallback&& callback)
+EJoyReturn ThreadLocalEndpoint::GBAResetAsync(u8* status, FGBACallback&& callback)
 {
     if (m_ep.m_cmdIssued)
         return GBA_NOT_READY;
@@ -845,7 +858,7 @@ EJoyReturn EndpointLocal::GBAResetAsync(u8* status, FGBACallback&& callback)
     return GBA_READY;
 }
 
-EJoyReturn EndpointLocal::GBAReadAsync(u8* dst, u8* status, FGBACallback&& callback)
+EJoyReturn ThreadLocalEndpoint::GBAReadAsync(u8* dst, u8* status, FGBACallback&& callback)
 {
     if (m_ep.m_cmdIssued)
         return GBA_NOT_READY;
@@ -859,7 +872,7 @@ EJoyReturn EndpointLocal::GBAReadAsync(u8* dst, u8* status, FGBACallback&& callb
     return GBA_READY;
 }
 
-EJoyReturn EndpointLocal::GBAWriteAsync(const u8* src, u8* status, FGBACallback&& callback)
+EJoyReturn ThreadLocalEndpoint::GBAWriteAsync(const u8* src, u8* status, FGBACallback&& callback)
 {
     if (m_ep.m_cmdIssued)
         return GBA_NOT_READY;

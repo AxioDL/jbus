@@ -122,7 +122,7 @@ class Socket
         m_socket = socket(PF_INET, SOCK_STREAM, 0);
         if (m_socket == -1)
         {
-            fprintf(stderr, "Can't allocate socket");
+            fprintf(stderr, "Can't allocate socket\n");
             return false;
         }
 
@@ -192,14 +192,14 @@ public:
         if (bind(m_socket, reinterpret_cast<sockaddr*>(&addr), sizeof(addr)) == -1)
         {
             /* Not likely to happen, but... */
-            fprintf(stderr, "Failed to bind listener socket to port %d", port);
+            fprintf(stderr, "Failed to bind listener socket to port %d\n", port);
             return false;
         }
 
         if (::listen(m_socket, 0) == -1)
         {
             /* Oops, socket is deaf */
-            fprintf(stderr, "Failed to listen to port %d", port);
+            fprintf(stderr, "Failed to listen to port %d\n", port);
             return false;
         }
 
@@ -220,7 +220,7 @@ public:
         {
             EResult res = (errno == EAGAIN) ? EResult::Busy : EResult::Error;
             if (res == EResult::Error)
-                fprintf(stderr, "Failed to accept incoming connection: %s", strerror(errno));
+                fprintf(stderr, "Failed to accept incoming connection: %s\n", strerror(errno));
             return res;
         }
 

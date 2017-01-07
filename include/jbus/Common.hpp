@@ -137,7 +137,7 @@ static inline double SBig(double val) {return val;}
 #endif
 
 class Endpoint;
-class EndpointLocal;
+class ThreadLocalEndpoint;
 
 enum EJStatFlags
 {
@@ -159,7 +159,7 @@ enum EJoyReturn
     GBA_JOYBOOT_ERR_INVALID    = 4
 };
 
-using FGBACallback = std::function<void(EndpointLocal& endpoint, EJoyReturn status)>;
+using FGBACallback = std::function<void(ThreadLocalEndpoint& endpoint, EJoyReturn status)>;
 
 u64 GetGCTicks();
 void WaitGCTicks(u64 ticks);
