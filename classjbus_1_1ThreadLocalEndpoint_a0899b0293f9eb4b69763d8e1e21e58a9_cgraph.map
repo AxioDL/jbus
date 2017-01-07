@@ -1,0 +1,5 @@
+<map id="jbus::ThreadLocalEndpoint::GetChan" name="jbus::ThreadLocalEndpoint::GetChan">
+<area shape="rect" id="node2" href="$classjbus_1_1Endpoint.html#acb5167184768ea65d026adc531f237b9" title="Get virtual SI channel assigned to this endpoint. " alt="" coords="233,31,400,56"/>
+<area shape="rect" id="node3" href="$classjbus_1_1Endpoint.html#a39ddcbf5ac7078d59a4d99d291e3f0fa" title="jbus::Endpoint::Endpoint" alt="" coords="452,5,618,31"/>
+<area shape="rect" id="node4" href="$classjbus_1_1Endpoint.html#ad39f268d3bee438e5176cc7f4cf59675" title="jbus::Endpoint::~Endpoint" alt="" coords="448,55,622,80"/>
+</map>

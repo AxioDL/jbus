@@ -1,0 +1,28 @@
+var searchData=
+[
+  ['gba_5fbusy',['GBA_BUSY',['../namespacejbus.html#a7118bfa3cb9d51e588418220bca20117a97f6047ad685bdd832831954ab4454a0',1,'jbus']]],
+  ['gba_5fjoyboot_5ferr_5finvalid',['GBA_JOYBOOT_ERR_INVALID',['../namespacejbus.html#a7118bfa3cb9d51e588418220bca20117abdeee79304d78d822a4b5f5b71f5ddad',1,'jbus']]],
+  ['gba_5fjoyboot_5funknown_5fstate',['GBA_JOYBOOT_UNKNOWN_STATE',['../namespacejbus.html#a7118bfa3cb9d51e588418220bca20117a5f890238a7828bd688477a32fdef34db',1,'jbus']]],
+  ['gba_5fjstat_5fflags_5fmask',['GBA_JSTAT_FLAGS_MASK',['../namespacejbus.html#a6a14af068c46e5eaac52e4c6ae081ab9a78506d78e40b43d15ff101f4efa00269',1,'jbus']]],
+  ['gba_5fjstat_5fflags_5fshift',['GBA_JSTAT_FLAGS_SHIFT',['../namespacejbus.html#a6a14af068c46e5eaac52e4c6ae081ab9a92d3659e0d24e5242af71dbfa1a25b20',1,'jbus']]],
+  ['gba_5fjstat_5fmask',['GBA_JSTAT_MASK',['../namespacejbus.html#a6a14af068c46e5eaac52e4c6ae081ab9a073fa6fd8ff5ae41567160cf897db7c1',1,'jbus']]],
+  ['gba_5fjstat_5fpsf0',['GBA_JSTAT_PSF0',['../namespacejbus.html#a6a14af068c46e5eaac52e4c6ae081ab9a9d1af0345a227524011d9845c0c3c4f8',1,'jbus']]],
+  ['gba_5fjstat_5fpsf1',['GBA_JSTAT_PSF1',['../namespacejbus.html#a6a14af068c46e5eaac52e4c6ae081ab9a93e801d066708e0c98eec71c42803f94',1,'jbus']]],
+  ['gba_5fjstat_5frecv',['GBA_JSTAT_RECV',['../namespacejbus.html#a6a14af068c46e5eaac52e4c6ae081ab9a814553611e2f05ce7daede703c9b0a20',1,'jbus']]],
+  ['gba_5fjstat_5fsend',['GBA_JSTAT_SEND',['../namespacejbus.html#a6a14af068c46e5eaac52e4c6ae081ab9afe5cad6728edc3ab4aab7b0a9375350c',1,'jbus']]],
+  ['gba_5fnot_5fready',['GBA_NOT_READY',['../namespacejbus.html#a7118bfa3cb9d51e588418220bca20117aac3cd7dd0e4cb525e5045cb9e9c1f09a',1,'jbus']]],
+  ['gba_5fready',['GBA_READY',['../namespacejbus.html#a7118bfa3cb9d51e588418220bca20117a1e5f181b31229228f6741a4e3106c3fd',1,'jbus']]],
+  ['gbagetprocessstatus',['GBAGetProcessStatus',['../classjbus_1_1Endpoint.html#a50401a9a9d658f1f68e3dde61d5dfbce',1,'jbus::Endpoint']]],
+  ['gbagetstatus',['GBAGetStatus',['../classjbus_1_1Endpoint.html#a779ba524cf30f41e29fd53a626ba2acf',1,'jbus::Endpoint']]],
+  ['gbagetstatusasync',['GBAGetStatusAsync',['../classjbus_1_1Endpoint.html#a4ba9120b99057be42940b797708b790e',1,'jbus::Endpoint::GBAGetStatusAsync()'],['../classjbus_1_1ThreadLocalEndpoint.html#ad81335c0018a42ef9085d6941c4cddd5',1,'jbus::ThreadLocalEndpoint::GBAGetStatusAsync()']]],
+  ['gbajoybootasync',['GBAJoyBootAsync',['../classjbus_1_1Endpoint.html#aad76a9374e4e151540f678798548a843',1,'jbus::Endpoint']]],
+  ['gbaread',['GBARead',['../classjbus_1_1Endpoint.html#a775c816f52ca45117759b5b23eb45683',1,'jbus::Endpoint']]],
+  ['gbareadasync',['GBAReadAsync',['../classjbus_1_1Endpoint.html#a047d724cc9ccb8253cb8464c24b9ccd4',1,'jbus::Endpoint::GBAReadAsync()'],['../classjbus_1_1ThreadLocalEndpoint.html#aa1b9704d834d55b5118d4612dc335f4c',1,'jbus::ThreadLocalEndpoint::GBAReadAsync()']]],
+  ['gbareset',['GBAReset',['../classjbus_1_1Endpoint.html#a9065f6189182596a3f5c498e8ef98b40',1,'jbus::Endpoint']]],
+  ['gbaresetasync',['GBAResetAsync',['../classjbus_1_1Endpoint.html#a81d86608ffb93b3211a915fa1712beb4',1,'jbus::Endpoint::GBAResetAsync()'],['../classjbus_1_1ThreadLocalEndpoint.html#aab260d6d6686c2c3fc2ff31f57cf436d',1,'jbus::ThreadLocalEndpoint::GBAResetAsync()']]],
+  ['gbawrite',['GBAWrite',['../classjbus_1_1Endpoint.html#a6e59373aa28a23097129470deaeb46dd',1,'jbus::Endpoint']]],
+  ['gbawriteasync',['GBAWriteAsync',['../classjbus_1_1Endpoint.html#a06506d0cfa26d461f239ed761264d7b0',1,'jbus::Endpoint::GBAWriteAsync()'],['../classjbus_1_1ThreadLocalEndpoint.html#aa1625ccaf1f817831d56cf32554bc40c',1,'jbus::ThreadLocalEndpoint::GBAWriteAsync()']]],
+  ['getchan',['GetChan',['../classjbus_1_1Endpoint.html#acb5167184768ea65d026adc531f237b9',1,'jbus::Endpoint::GetChan()'],['../classjbus_1_1ThreadLocalEndpoint.html#a0899b0293f9eb4b69763d8e1e21e58a9',1,'jbus::ThreadLocalEndpoint::GetChan()']]],
+  ['getgcticks',['GetGCTicks',['../namespacejbus.html#a5944719111a14f5920ec765e5dcf71db',1,'jbus']]],
+  ['getinternalsocket',['GetInternalSocket',['../classjbus_1_1net_1_1Socket.html#a66864f8061a4d96fb9ceabc808532046',1,'jbus::net::Socket']]]
+];
