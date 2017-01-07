@@ -132,13 +132,6 @@ class Endpoint
         CMD_WRITE = 0x15
     };
 
-    enum class EWaitResp
-    {
-        NoWait = 0,
-        WaitCmd,
-        WaitIdle
-    };
-
     static const u64 BITS_PER_SECOND = 115200;
     static const u64 BYTES_PER_SECOND = BITS_PER_SECOND / 8;
 
@@ -147,16 +140,13 @@ class Endpoint
     std::thread m_transferThread;
     std::mutex m_syncLock;
     std::condition_variable m_syncCv;
+    std::condition_variable m_issueCv;
     std::experimental::optional<KawasedoChallenge> m_joyBoot;
     FGBACallback m_callback;
-    EWaitResp m_waitingResp = EWaitResp::NoWait;
-    size_t m_dataReceivedBytes = 0;
     u8 m_buffer[5];
-    u64 m_timeSent = 0;
     u8* m_readDstPtr = nullptr;
     u8* m_statusPtr = nullptr;
     u64 m_lastGCTick = 0;
-    u64 m_timeCmdSent = 0;
     u8 m_lastCmd = 0;
     u8 m_chan;
     bool m_booted = false;
@@ -167,8 +157,8 @@ class Endpoint
     void clockSync();
     void send(const u8* buffer);
     size_t receive(u8* buffer);
-    size_t runBuffer(u8* buffer, u64& remTicks, EWaitResp resp);
-    bool idleGetStatus(u64& remTicks);
+    size_t runBuffer(u8* buffer, std::unique_lock<std::mutex>& lk);
+    bool idleGetStatus(std::unique_lock<std::mutex>& lk);
     void transferProc();
     void transferWakeup(ThreadLocalEndpoint& endpoint, u8 status);
 

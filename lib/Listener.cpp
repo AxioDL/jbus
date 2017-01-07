@@ -53,8 +53,9 @@ void Listener::listenerProc()
         }
     }
 
-    net::Socket acceptData = {false};
-    net::Socket acceptClock = {false};
+    /* We use blocking I/O since we have a dedicated transfer thread */
+    net::Socket acceptData = {true};
+    net::Socket acceptClock = {true};
     std::string hostname;
     u8 chan = 1;
     while (m_running && chan < 4)

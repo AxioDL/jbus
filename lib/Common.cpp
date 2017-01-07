@@ -51,8 +51,18 @@ void WaitGCTicks(u64 ticks)
     tv.tv_usec = (ticks % GetGCTicksPerSec()) * 1000000 / GetGCTicksPerSec();
     select(0, NULL, NULL, NULL, &tv);
 #else
-    Sleep(ticks * 1000 / GetGCTicksPerSec() +
-          (ticks % GetGCTicksPerSec()) * 1000 / GetGCTicksPerSec());
+    if (ticks < GetGCTicksPerSec() / 60)
+    {
+        /* NT is useless for scheduling sub-millisecond intervals */
+        u64 start = GetGCTicks();
+        do { Sleep(0); } while (GetGCTicks() - start < ticks);
+    }
+    else
+    {
+        /* Use normal Sleep() for durations longer than ~16ms */
+        Sleep(ticks * 1000 / GetGCTicksPerSec() +
+              (ticks % GetGCTicksPerSec()) * 1000 / GetGCTicksPerSec());
+    }
 #endif
 }
 
