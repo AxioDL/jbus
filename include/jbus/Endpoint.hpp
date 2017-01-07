@@ -5,6 +5,7 @@
 #include "Socket.hpp"
 #include "optional.hpp"
 #include <thread>
+#include <mutex>
 
 namespace jbus
 {
@@ -165,7 +166,7 @@ class Endpoint
     static u64 getTransferTime(u8 cmd);
     void clockSync();
     void send(const u8* buffer);
-    size_t seceive(u8* buffer);
+    size_t receive(u8* buffer);
     size_t runBuffer(u8* buffer, u64& remTicks, EWaitResp resp);
     bool idleGetStatus(u64& remTicks);
     void transferProc();

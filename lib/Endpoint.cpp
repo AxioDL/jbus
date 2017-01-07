@@ -1,6 +1,6 @@
 #include "jbus/Endpoint.hpp"
 
-#define LOG_TRANSFER 0
+#define LOG_TRANSFER 1
 
 namespace jbus
 {
@@ -418,6 +418,7 @@ void Endpoint::clockSync()
     TickDelta = u32(u64(TickDelta) * 16777216 / GetGCTicksPerSec());
     m_lastGCTick = GetGCTicks();
     TickDelta = SBig(TickDelta);
+    m_clockSocket.setBlocking(false);
     if (m_clockSocket.send(&TickDelta, 4) == net::Socket::EResult::Error)
         m_running = false;
 }
@@ -428,6 +429,7 @@ void Endpoint::send(const u8* buffer)
 
     net::Socket::EResult result;
     size_t sentBytes;
+    m_dataSocket.setBlocking(false);
     if (m_lastCmd == CMD_WRITE)
         result = m_dataSocket.send(buffer, 5, sentBytes);
     else
@@ -451,7 +453,7 @@ void Endpoint::send(const u8* buffer)
     m_timeCmdSent = GetGCTicks();
 }
 
-size_t Endpoint::seceive(u8* buffer)
+size_t Endpoint::receive(u8* buffer)
 {
     if (!m_dataSocket)
     {
@@ -523,7 +525,7 @@ size_t Endpoint::runBuffer(u8* buffer, u64& remTicks, EWaitResp resp)
 
     if (m_waitingResp != EWaitResp::NoWait && m_dataReceivedBytes == 0)
     {
-        m_dataReceivedBytes = seceive(buffer);
+        m_dataReceivedBytes = receive(buffer);
     }
 
     u64 ticksSinceSend = GetGCTicks() - m_timeSent;

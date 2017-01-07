@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include "jbus/Listener.hpp"
 #include "jbus/Endpoint.hpp"
+#include <functional>
 
 static void clientPadComplimentCheck(jbus::u8* buffer)
 {
@@ -83,7 +84,9 @@ int main(int argc, char** argv)
 
     jbus::u8 status;
     if (endpoint->GBAJoyBootAsync(2, 2, data.get(), fsize,
-                                  &status, JoyBootDone) != jbus::GBA_READY)
+        &status, std::bind(JoyBootDone,
+                           std::placeholders::_1,
+                           std::placeholders::_2)) != jbus::GBA_READY)
     {
         fprintf(stderr, "Unable to start JoyBoot\n");
         return 1;

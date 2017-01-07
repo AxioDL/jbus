@@ -5,6 +5,7 @@
 #include "Socket.hpp"
 #include <thread>
 #include <queue>
+#include <mutex>
 
 namespace jbus
 {

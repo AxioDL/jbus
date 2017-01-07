@@ -1,7 +1,7 @@
 #include "jbus/Listener.hpp"
 #include "jbus/Endpoint.hpp"
 
-#define LOG_LISTENER 0
+#define LOG_LISTENER 1
 
 namespace jbus
 {
@@ -25,7 +25,7 @@ void Listener::listenerProc()
 #if LOG_LISTENER
                 printf("data open failed %s; will retry\n", strerror(errno));
 #endif
-                sleep(1);
+                WaitGCTicks(GetGCTicksPerSec());
             }
             else
             {
@@ -42,7 +42,7 @@ void Listener::listenerProc()
 #if LOG_LISTENER
                 printf("clock open failed %s; will retry\n", strerror(errno));
 #endif
-                sleep(1);
+                WaitGCTicks(GetGCTicksPerSec());
             }
             else
             {
@@ -77,7 +77,7 @@ void Listener::listenerProc()
             m_endpointQueue.push(std::make_unique<Endpoint>(
                 chan++, std::move(acceptData), std::move(acceptClock)));
         }
-        sleep(1);
+        WaitGCTicks(GetGCTicksPerSec());
     }
 
     m_dataServer.close();
