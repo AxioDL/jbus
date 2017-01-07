@@ -3,6 +3,8 @@ project(jbus)
 
 if(WIN32)
 set(JBUS_PLAT_LIBS Ws2_32)
+elseif(UNIX AND NOT APPLE)
+set(JBUS_PLAT_LIBS pthread)
 endif()
 
 include_directories(include)
