@@ -10,6 +10,7 @@
 namespace jbus
 {
 
+/** Server interface for accepting incoming connections from GBA emulator instances. */
 class Listener
 {
     net::Socket m_dataServer = {false};
@@ -25,9 +26,16 @@ class Listener
     void listenerProc();
 
 public:
+    /** @brief Start listener thread. */
     void start();
+
+    /** @brief Request stop of listener thread and block until joined. */
     void stop();
+
+    /** @brief Pop jbus::Endpoint off Listener's queue.
+     *  @return Endpoint instance, ready to issue commands. */
     std::unique_ptr<Endpoint> accept();
+
     ~Listener();
 };
 

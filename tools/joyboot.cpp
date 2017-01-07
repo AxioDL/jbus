@@ -95,7 +95,7 @@ int main(int argc, char** argv)
     jbus::s64 start = jbus::GetGCTicks();
     jbus::u8 percent = 0;
     jbus::u8 lastpercent = 0;
-    while (endpoint->GBAGetProcessStatus(&percent) == jbus::GBA_BUSY)
+    while (endpoint->GBAGetProcessStatus(percent) == jbus::GBA_BUSY)
     {
         if (percent != lastpercent)
         {

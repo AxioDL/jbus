@@ -5,11 +5,11 @@
 namespace jbus
 {
 
-void KawasedoChallenge::F23(ThreadLocalEndpoint& endpoint, EJoyReturn status)
+void Endpoint::KawasedoChallenge::_0Reset(ThreadLocalEndpoint& endpoint, EJoyReturn status)
 {
     if (status != GBA_READY ||
         (status = endpoint.GBAResetAsync(x10_statusPtr,
-                  bindThis(&KawasedoChallenge::F25))) != GBA_READY)
+                  bindThis(&KawasedoChallenge::_1GetStatus))) != GBA_READY)
     {
         x28_ticksAfterXf = 0;
         if (x14_callback)
@@ -20,7 +20,7 @@ void KawasedoChallenge::F23(ThreadLocalEndpoint& endpoint, EJoyReturn status)
     }
 }
 
-void KawasedoChallenge::F25(ThreadLocalEndpoint& endpoint, EJoyReturn status)
+void Endpoint::KawasedoChallenge::_1GetStatus(ThreadLocalEndpoint& endpoint, EJoyReturn status)
 {
     if (status == GBA_READY)
         if (*x10_statusPtr != GBA_JSTAT_SEND)
@@ -28,7 +28,7 @@ void KawasedoChallenge::F25(ThreadLocalEndpoint& endpoint, EJoyReturn status)
 
     if (status != GBA_READY ||
         (status = endpoint.GBAGetStatusAsync(x10_statusPtr,
-                  bindThis(&KawasedoChallenge::F27))) != GBA_READY)
+                  bindThis(&KawasedoChallenge::_2ReadChallenge))) != GBA_READY)
     {
         x28_ticksAfterXf = 0;
         if (x14_callback)
@@ -39,7 +39,7 @@ void KawasedoChallenge::F25(ThreadLocalEndpoint& endpoint, EJoyReturn status)
     }
 }
 
-void KawasedoChallenge::F27(ThreadLocalEndpoint& endpoint, EJoyReturn status)
+void Endpoint::KawasedoChallenge::_2ReadChallenge(ThreadLocalEndpoint& endpoint, EJoyReturn status)
 {
     if (status == GBA_READY)
         if (*x10_statusPtr != (GBA_JSTAT_PSF0 | GBA_JSTAT_SEND))
@@ -47,7 +47,7 @@ void KawasedoChallenge::F27(ThreadLocalEndpoint& endpoint, EJoyReturn status)
 
     if (status != GBA_READY ||
         (status = endpoint.GBAReadAsync(x18_readBuf, x10_statusPtr,
-                  bindThis(&KawasedoChallenge::F29))) != GBA_READY)
+                  bindThis(&KawasedoChallenge::_3DSPCrypto))) != GBA_READY)
     {
         x28_ticksAfterXf = 0;
         if (x14_callback)
@@ -58,7 +58,7 @@ void KawasedoChallenge::F27(ThreadLocalEndpoint& endpoint, EJoyReturn status)
     }
 }
 
-void KawasedoChallenge::F29(ThreadLocalEndpoint& endpoint, EJoyReturn status)
+void Endpoint::KawasedoChallenge::_3DSPCrypto(ThreadLocalEndpoint& endpoint, EJoyReturn status)
 {
     if (status != GBA_READY)
     {
@@ -71,12 +71,12 @@ void KawasedoChallenge::F29(ThreadLocalEndpoint& endpoint, EJoyReturn status)
     }
     else
     {
-        GBAX02();
-        GBAX01(endpoint);
+        _DSPCryptoInit();
+        _DSPCryptoDone(endpoint);
     }
 }
 
-void KawasedoChallenge::GBAX02()
+void Endpoint::KawasedoChallenge::_DSPCryptoInit()
 {
     xf8_dspHmac.x0_gbaChallenge = reinterpret_cast<u32&>(x18_readBuf);
     xf8_dspHmac.x4_logoPalette = x0_pColor;
@@ -85,7 +85,7 @@ void KawasedoChallenge::GBAX02()
     xf8_dspHmac.ProcessGBACrypto();
 }
 
-void KawasedoChallenge::GBAX01(ThreadLocalEndpoint& endpoint)
+void Endpoint::KawasedoChallenge::_DSPCryptoDone(ThreadLocalEndpoint& endpoint)
 {
     x58_currentKey = xf8_dspHmac.x20_publicKey;
     x5c_initMessage = xf8_dspHmac.x24_authInitCode;
@@ -107,7 +107,7 @@ void KawasedoChallenge::GBAX01(ThreadLocalEndpoint& endpoint)
 
     EJoyReturn status;
     if ((status = endpoint.GBAWriteAsync(x1c_writeBuf, x10_statusPtr,
-                  bindThis(&KawasedoChallenge::F31))) != GBA_READY)
+                  bindThis(&KawasedoChallenge::_4TransmitProgram))) != GBA_READY)
     {
         x28_ticksAfterXf = 0;
         if (x14_callback)
@@ -118,7 +118,7 @@ void KawasedoChallenge::GBAX01(ThreadLocalEndpoint& endpoint)
     }
 }
 
-void KawasedoChallenge::F31(ThreadLocalEndpoint& endpoint, EJoyReturn status)
+void Endpoint::KawasedoChallenge::_4TransmitProgram(ThreadLocalEndpoint& endpoint, EJoyReturn status)
 {
     if (status != GBA_READY)
     {
@@ -240,7 +240,7 @@ void KawasedoChallenge::F31(ThreadLocalEndpoint& endpoint, EJoyReturn status)
         }
 
         if ((status = endpoint.GBAWriteAsync(x1c_writeBuf, x10_statusPtr,
-                      bindThis(&KawasedoChallenge::F31))) != GBA_READY)
+                      bindThis(&KawasedoChallenge::_4TransmitProgram))) != GBA_READY)
         {
             x28_ticksAfterXf = 0;
             if (x14_callback)
@@ -253,7 +253,7 @@ void KawasedoChallenge::F31(ThreadLocalEndpoint& endpoint, EJoyReturn status)
     else // x34_bytesWritten > x64_totalBytes
     {
         if ((status = endpoint.GBAReadAsync(x18_readBuf, x10_statusPtr,
-                      bindThis(&KawasedoChallenge::F33))) != GBA_READY)
+                      bindThis(&KawasedoChallenge::_5StartBootPoll))) != GBA_READY)
         {
             x28_ticksAfterXf = 0;
             if (x14_callback)
@@ -265,11 +265,11 @@ void KawasedoChallenge::F31(ThreadLocalEndpoint& endpoint, EJoyReturn status)
     }
 }
 
-void KawasedoChallenge::F33(ThreadLocalEndpoint& endpoint, EJoyReturn status)
+void Endpoint::KawasedoChallenge::_5StartBootPoll(ThreadLocalEndpoint& endpoint, EJoyReturn status)
 {
     if (status != GBA_READY ||
         (status = endpoint.GBAGetStatusAsync(x10_statusPtr,
-                  bindThis(&KawasedoChallenge::F35))) != GBA_READY)
+                  bindThis(&KawasedoChallenge::_6BootPoll))) != GBA_READY)
     {
         x28_ticksAfterXf = 0;
         if (x14_callback)
@@ -280,7 +280,7 @@ void KawasedoChallenge::F33(ThreadLocalEndpoint& endpoint, EJoyReturn status)
     }
 }
 
-void KawasedoChallenge::F35(ThreadLocalEndpoint& endpoint, EJoyReturn status)
+void Endpoint::KawasedoChallenge::_6BootPoll(ThreadLocalEndpoint& endpoint, EJoyReturn status)
 {
     if (status == GBA_READY)
         if (*x10_statusPtr & (GBA_JSTAT_FLAGS_MASK | GBA_JSTAT_RECV))
@@ -300,7 +300,7 @@ void KawasedoChallenge::F35(ThreadLocalEndpoint& endpoint, EJoyReturn status)
     if (*x10_statusPtr != GBA_JSTAT_SEND)
     {
         if ((status = endpoint.GBAGetStatusAsync(x10_statusPtr,
-                      bindThis(&KawasedoChallenge::F35))) != GBA_READY)
+                      bindThis(&KawasedoChallenge::_6BootPoll))) != GBA_READY)
         {
             x28_ticksAfterXf = 0;
             if (x14_callback)
@@ -313,7 +313,7 @@ void KawasedoChallenge::F35(ThreadLocalEndpoint& endpoint, EJoyReturn status)
     }
 
     if ((status = endpoint.GBAReadAsync(x18_readBuf, x10_statusPtr,
-                  bindThis(&KawasedoChallenge::F37))) != GBA_READY)
+                  bindThis(&KawasedoChallenge::_7BootAcknowledge))) != GBA_READY)
     {
         x28_ticksAfterXf = 0;
         if (x14_callback)
@@ -324,11 +324,11 @@ void KawasedoChallenge::F35(ThreadLocalEndpoint& endpoint, EJoyReturn status)
     }
 }
 
-void KawasedoChallenge::F37(ThreadLocalEndpoint& endpoint, EJoyReturn status)
+void Endpoint::KawasedoChallenge::_7BootAcknowledge(ThreadLocalEndpoint& endpoint, EJoyReturn status)
 {
     if (status != GBA_READY ||
         (status = endpoint.GBAWriteAsync(x18_readBuf, x10_statusPtr,
-                  bindThis(&KawasedoChallenge::F39))) != GBA_READY)
+                  bindThis(&KawasedoChallenge::_8BootDone))) != GBA_READY)
     {
         x28_ticksAfterXf = 0;
         if (x14_callback)
@@ -339,7 +339,7 @@ void KawasedoChallenge::F37(ThreadLocalEndpoint& endpoint, EJoyReturn status)
     }
 }
 
-void KawasedoChallenge::F39(ThreadLocalEndpoint& endpoint, EJoyReturn status)
+void Endpoint::KawasedoChallenge::_8BootDone(ThreadLocalEndpoint& endpoint, EJoyReturn status)
 {
     if (status == GBA_READY)
         *x10_statusPtr = 0;
@@ -353,48 +353,17 @@ void KawasedoChallenge::F39(ThreadLocalEndpoint& endpoint, EJoyReturn status)
     }
 }
 
-KawasedoChallenge::KawasedoChallenge(Endpoint& endpoint, s32 paletteColor, s32 paletteSpeed,
-                                     u8* programp, s32 length, u8* status, FGBACallback&& callback)
+Endpoint::KawasedoChallenge::KawasedoChallenge(Endpoint& endpoint, s32 paletteColor, s32 paletteSpeed,
+                                               const u8* programp, s32 length, u8* status, FGBACallback&& callback)
 : x0_pColor(paletteColor), x4_pSpeed(paletteSpeed), x8_progPtr(programp), xc_progLen(length),
   x10_statusPtr(status), x14_callback(std::move(callback)), x34_bytesSent(0)
 {
     if (endpoint.GBAGetStatusAsync(x10_statusPtr,
-        bindThis(&KawasedoChallenge::F23)) != GBA_READY)
+        bindThis(&KawasedoChallenge::_0Reset)) != GBA_READY)
     {
         x14_callback = {};
         m_started = false;
     }
-}
-
-u64 Endpoint::getTransferTime(u8 cmd)
-{
-    u64 bytes = 0;
-
-    switch (cmd)
-    {
-    case CMD_RESET:
-    case CMD_STATUS:
-    {
-        bytes = 4;
-        break;
-    }
-    case CMD_READ:
-    {
-        bytes = 6;
-        break;
-    }
-    case CMD_WRITE:
-    {
-        bytes = 1;
-        break;
-    }
-    default:
-    {
-        bytes = 1;
-        break;
-    }
-    }
-    return bytes * GetGCTicksPerSec() / BYTES_PER_SECOND;
 }
 
 void Endpoint::clockSync()
@@ -598,12 +567,12 @@ void Endpoint::stop()
         m_transferThread.join();
 }
 
-EJoyReturn Endpoint::GBAGetProcessStatus(u8* percentp)
+EJoyReturn Endpoint::GBAGetProcessStatus(u8& percentOut)
 {
     std::unique_lock<std::mutex> lk(m_syncLock);
     if (m_joyBoot)
     {
-        *percentp = m_joyBoot->percentComplete();
+        percentOut = m_joyBoot->percentComplete();
         if (!m_joyBoot->isDone())
             return GBA_BUSY;
     }
@@ -753,7 +722,7 @@ EJoyReturn Endpoint::GBAWrite(const u8* src, u8* status)
 }
 
 EJoyReturn Endpoint::GBAJoyBootAsync(s32 paletteColor, s32 paletteSpeed,
-                                     u8* programp, s32 length, u8* status,
+                                     const u8* programp, s32 length, u8* status,
                                      FGBACallback&& callback)
 {
     if (m_chan > 3)

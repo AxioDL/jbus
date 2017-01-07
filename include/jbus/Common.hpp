@@ -17,6 +17,8 @@ using u32 = uint32_t;
 using s64 = int64_t;
 using u64 = uint64_t;
 
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
+
 #undef bswap16
 #undef bswap32
 #undef bswap64
@@ -139,6 +141,8 @@ static inline double SBig(double val) {return val;}
 class Endpoint;
 class ThreadLocalEndpoint;
 
+#endif
+
 enum EJStatFlags
 {
     GBA_JSTAT_MASK         = 0x3a,
@@ -159,11 +163,24 @@ enum EJoyReturn
     GBA_JOYBOOT_ERR_INVALID    = 4
 };
 
+/** @brief Standard callback for asynchronous jbus::Endpoint APIs.
+ *  @param endpoint Thread-local Endpoint interface for optionally issuing next command in sequence.
+ *  @param status GBA_READY if connection is still open, GBA_NOT_READY if connection lost. */
 using FGBACallback = std::function<void(ThreadLocalEndpoint& endpoint, EJoyReturn status)>;
 
+/** @brief Get host system's timebase scaled into Dolphin ticks.
+ *  @return Scaled ticks from host timebase. */
 u64 GetGCTicks();
+
+/** @brief Wait an approximate Dolphin tick duration (avoid using, it's rather inaccurate).
+ *  @param ticks CPU ticks to wait. */
 void WaitGCTicks(u64 ticks);
+
+/** @brief Obtain CPU ticks per second of Dolphin hardware (clock speed).
+ *  @return 486Mhz - always. */
 static constexpr u64 GetGCTicksPerSec() { return 486000000ull; }
+
+/** @brief Initialize platform specifics of JBus library */
 void Initialize();
 
 }
