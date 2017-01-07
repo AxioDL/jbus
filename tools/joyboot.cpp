@@ -91,13 +91,18 @@ int main(int argc, char** argv)
 
     jbus::s64 start = jbus::GetGCTicks();
     jbus::u8 percent = 0;
+    jbus::u8 lastpercent = 0;
     while (endpoint->GBAGetProcessStatus(&percent) == jbus::GBA_BUSY)
     {
-        printf("\rUpload %d%%", percent);
-        fflush(stdout);
+        if (percent != lastpercent)
+        {
+            lastpercent = percent;
+            printf("\rUpload %d%%", percent);
+            fflush(stdout);
+        }
         jbus::s64 curTime = jbus::GetGCTicks();
         jbus::s64 passedTicks = curTime - start;
-        if (passedTicks > jbus::GetGCTicksPerSec() * 5)
+        if (passedTicks > jbus::GetGCTicksPerSec() * 10)
         {
             fprintf(stderr, "JoyBoot timeout\n");
             return 1;
@@ -110,7 +115,7 @@ int main(int argc, char** argv)
     {
         jbus::s64 curTime = jbus::GetGCTicks();
         jbus::s64 passedTicks = curTime - start;
-        if (passedTicks > jbus::GetGCTicksPerSec() * 10)
+        if (passedTicks > jbus::GetGCTicksPerSec() * 15)
         {
             fprintf(stderr, "JoyBoot timeout\n");
             return 1;
