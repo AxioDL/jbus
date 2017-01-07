@@ -1,7 +1,7 @@
 #include "jbus/Listener.hpp"
 #include "jbus/Endpoint.hpp"
 
-#define LOG_LISTENER 1
+#define LOG_LISTENER 0
 
 namespace jbus
 {

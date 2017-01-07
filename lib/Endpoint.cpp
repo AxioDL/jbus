@@ -1,6 +1,6 @@
 #include "jbus/Endpoint.hpp"
 
-#define LOG_TRANSFER 1
+#define LOG_TRANSFER 0
 
 namespace jbus
 {
