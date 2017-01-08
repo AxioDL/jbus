@@ -177,7 +177,7 @@ void Endpoint::KawasedoChallenge::_4TransmitProgram(ThreadLocalEndpoint& endpoin
             }
             else if (x34_bytesSent == 0xc4)
             {
-                cryptWindow = endpoint.GetChan() << 0x8;
+                cryptWindow = endpoint.getChan() << 0x8;
             }
 
             if (x34_bytesSent >= 0xc0)
@@ -569,6 +569,9 @@ void Endpoint::stop()
 
 EJoyReturn Endpoint::GBAGetProcessStatus(u8& percentOut)
 {
+    if (!m_running)
+        return GBA_NOT_READY;
+
     std::unique_lock<std::mutex> lk(m_syncLock);
     if (m_joyBoot)
     {
@@ -585,6 +588,9 @@ EJoyReturn Endpoint::GBAGetProcessStatus(u8& percentOut)
 
 EJoyReturn Endpoint::GBAGetStatusAsync(u8* status, FGBACallback&& callback)
 {
+    if (!m_running)
+        return GBA_NOT_READY;
+
     std::unique_lock<std::mutex> lk(m_syncLock);
     if (m_cmdIssued)
         return GBA_NOT_READY;
@@ -601,6 +607,9 @@ EJoyReturn Endpoint::GBAGetStatusAsync(u8* status, FGBACallback&& callback)
 
 EJoyReturn Endpoint::GBAGetStatus(u8* status)
 {
+    if (!m_running)
+        return GBA_NOT_READY;
+
     std::unique_lock<std::mutex> lk(m_syncLock);
     if (m_cmdIssued)
         return GBA_NOT_READY;
@@ -618,6 +627,9 @@ EJoyReturn Endpoint::GBAGetStatus(u8* status)
 
 EJoyReturn Endpoint::GBAResetAsync(u8* status, FGBACallback&& callback)
 {
+    if (!m_running)
+        return GBA_NOT_READY;
+
     std::unique_lock<std::mutex> lk(m_syncLock);
     if (m_cmdIssued)
         return GBA_NOT_READY;
@@ -634,6 +646,9 @@ EJoyReturn Endpoint::GBAResetAsync(u8* status, FGBACallback&& callback)
 
 EJoyReturn Endpoint::GBAReset(u8* status)
 {
+    if (!m_running)
+        return GBA_NOT_READY;
+
     std::unique_lock<std::mutex> lk(m_syncLock);
     if (m_cmdIssued)
         return GBA_NOT_READY;
@@ -651,6 +666,9 @@ EJoyReturn Endpoint::GBAReset(u8* status)
 
 EJoyReturn Endpoint::GBAReadAsync(u8* dst, u8* status, FGBACallback&& callback)
 {
+    if (!m_running)
+        return GBA_NOT_READY;
+
     std::unique_lock<std::mutex> lk(m_syncLock);
     if (m_cmdIssued)
         return GBA_NOT_READY;
@@ -668,6 +686,9 @@ EJoyReturn Endpoint::GBAReadAsync(u8* dst, u8* status, FGBACallback&& callback)
 
 EJoyReturn Endpoint::GBARead(u8* dst, u8* status)
 {
+    if (!m_running)
+        return GBA_NOT_READY;
+
     std::unique_lock<std::mutex> lk(m_syncLock);
     if (m_cmdIssued)
         return GBA_NOT_READY;
@@ -686,6 +707,9 @@ EJoyReturn Endpoint::GBARead(u8* dst, u8* status)
 
 EJoyReturn Endpoint::GBAWriteAsync(const u8* src, u8* status, FGBACallback&& callback)
 {
+    if (!m_running)
+        return GBA_NOT_READY;
+
     std::unique_lock<std::mutex> lk(m_syncLock);
     if (m_cmdIssued)
         return GBA_NOT_READY;
@@ -704,6 +728,9 @@ EJoyReturn Endpoint::GBAWriteAsync(const u8* src, u8* status, FGBACallback&& cal
 
 EJoyReturn Endpoint::GBAWrite(const u8* src, u8* status)
 {
+    if (!m_running)
+        return GBA_NOT_READY;
+
     std::unique_lock<std::mutex> lk(m_syncLock);
     if (m_cmdIssued)
         return GBA_NOT_READY;
@@ -725,6 +752,9 @@ EJoyReturn Endpoint::GBAJoyBootAsync(s32 paletteColor, s32 paletteSpeed,
                                      const u8* programp, s32 length, u8* status,
                                      FGBACallback&& callback)
 {
+    if (!m_running)
+        return GBA_NOT_READY;
+
     if (m_chan > 3)
         return GBA_JOYBOOT_ERR_INVALID;
 
@@ -758,7 +788,7 @@ Endpoint::~Endpoint() { stop(); }
 
 EJoyReturn ThreadLocalEndpoint::GBAGetStatusAsync(u8* status, FGBACallback&& callback)
 {
-    if (m_ep.m_cmdIssued)
+    if (!m_ep.m_running || m_ep.m_cmdIssued)
         return GBA_NOT_READY;
 
     m_ep.m_cmdIssued = true;
@@ -771,7 +801,7 @@ EJoyReturn ThreadLocalEndpoint::GBAGetStatusAsync(u8* status, FGBACallback&& cal
 
 EJoyReturn ThreadLocalEndpoint::GBAResetAsync(u8* status, FGBACallback&& callback)
 {
-    if (m_ep.m_cmdIssued)
+    if (!m_ep.m_running || m_ep.m_cmdIssued)
         return GBA_NOT_READY;
 
     m_ep.m_cmdIssued = true;
@@ -784,7 +814,7 @@ EJoyReturn ThreadLocalEndpoint::GBAResetAsync(u8* status, FGBACallback&& callbac
 
 EJoyReturn ThreadLocalEndpoint::GBAReadAsync(u8* dst, u8* status, FGBACallback&& callback)
 {
-    if (m_ep.m_cmdIssued)
+    if (!m_ep.m_running || m_ep.m_cmdIssued)
         return GBA_NOT_READY;
 
     m_ep.m_cmdIssued = true;
@@ -798,7 +828,7 @@ EJoyReturn ThreadLocalEndpoint::GBAReadAsync(u8* dst, u8* status, FGBACallback&&
 
 EJoyReturn ThreadLocalEndpoint::GBAWriteAsync(const u8* src, u8* status, FGBACallback&& callback)
 {
-    if (m_ep.m_cmdIssued)
+    if (!m_ep.m_running || m_ep.m_cmdIssued)
         return GBA_NOT_READY;
 
     m_ep.m_cmdIssued = true;

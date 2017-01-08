@@ -57,8 +57,7 @@ void Listener::listenerProc()
     net::Socket acceptData = {true};
     net::Socket acceptClock = {true};
     std::string hostname;
-    u8 chan = 1;
-    while (m_running && chan < 4)
+    while (m_running)
     {
         if (m_dataServer.accept(acceptData, hostname) == net::Socket::EResult::OK)
         {
@@ -76,7 +75,7 @@ void Listener::listenerProc()
         {
             std::unique_lock<std::mutex> lk(m_queueLock);
             m_endpointQueue.push(std::make_unique<Endpoint>(
-                chan++, std::move(acceptData), std::move(acceptClock)));
+                0, std::move(acceptData), std::move(acceptClock)));
         }
         WaitGCTicks(GetGCTicksPerSec());
     }

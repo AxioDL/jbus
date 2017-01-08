@@ -176,7 +176,7 @@ class Endpoint
 
 public:
     /** @brief Request stop of I/O thread and block until joined.
-     *  Further use of this Endpoint is undefined behavior.
+     *  Further use of this Endpoint will return GBA_NOT_READY.
      *  The destructor calls this implicitly. */
     void stop();
 
@@ -246,8 +246,21 @@ public:
                                FGBACallback&& callback);
 
     /** @brief Get virtual SI channel assigned to this endpoint.
-     *  @return SI channel */
-    int GetChan() const { return m_chan; }
+     *  @return SI channel [0,3] */
+    unsigned getChan() const { return m_chan; }
+
+    /** @brief Set virtual SI channel assigned to this endpoint.
+     *  @param chan SI channel [0,3] */
+    void setChan(unsigned chan)
+    {
+        if (chan > 3)
+            chan = 3;
+        m_chan = chan;
+    }
+
+    /** @brief Get connection status of this endpoint
+     *  @return true if connected */
+    bool connected() const { return m_running; }
 
     Endpoint(u8 chan, net::Socket&& data, net::Socket&& clock);
     ~Endpoint();
@@ -291,7 +304,7 @@ public:
 
     /** @brief Get virtual SI channel assigned to this endpoint.
      *  @return SI channel */
-    int GetChan() const { return m_ep.GetChan(); }
+    int getChan() const { return m_ep.getChan(); }
 };
 
 }
