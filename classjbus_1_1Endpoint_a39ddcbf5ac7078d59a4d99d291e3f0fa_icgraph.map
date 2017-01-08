@@ -1,4 +1,3 @@
 <map id="jbus::Endpoint::Endpoint" name="jbus::Endpoint::Endpoint">
-<area shape="rect" id="node2" href="$classjbus_1_1Endpoint.html#acb5167184768ea65d026adc531f237b9" title="Get virtual SI channel assigned to this endpoint. " alt="" coords="219,12,386,37"/>
-<area shape="rect" id="node3" href="$classjbus_1_1ThreadLocalEndpoint.html#a0899b0293f9eb4b69763d8e1e21e58a9" title="Get virtual SI channel assigned to this endpoint. " alt="" coords="434,5,614,44"/>
+<area shape="rect" id="node2" href="$classjbus_1_1Endpoint.html#a930f7ae80af4e13ff50122f2a54c63da" title="Get connection status of this endpoint. " alt="" coords="219,5,394,31"/>
 </map>

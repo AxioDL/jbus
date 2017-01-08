@@ -120,7 +120,7 @@ $(document).ready(function(){initNavTree('classjbus_1_1Endpoint.html','');});
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:a1cae93f2e1e097b10b34810a0d04333f"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classjbus_1_1Endpoint.html#a1cae93f2e1e097b10b34810a0d04333f">stop</a> ()</td></tr>
-<tr class="memdesc:a1cae93f2e1e097b10b34810a0d04333f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Request stop of I/O thread and block until joined. Further use of this <a class="el" href="classjbus_1_1Endpoint.html">Endpoint</a> is undefined behavior. The destructor calls this implicitly.  <a href="#a1cae93f2e1e097b10b34810a0d04333f">More...</a><br /></td></tr>
+<tr class="memdesc:a1cae93f2e1e097b10b34810a0d04333f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Request stop of I/O thread and block until joined. Further use of this <a class="el" href="classjbus_1_1Endpoint.html">Endpoint</a> will return GBA_NOT_READY. The destructor calls this implicitly.  <a href="#a1cae93f2e1e097b10b34810a0d04333f">More...</a><br /></td></tr>
 <tr class="separator:a1cae93f2e1e097b10b34810a0d04333f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a50401a9a9d658f1f68e3dde61d5dfbce"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacejbus.html#a7118bfa3cb9d51e588418220bca20117">EJoyReturn</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classjbus_1_1Endpoint.html#a50401a9a9d658f1f68e3dde61d5dfbce">GBAGetProcessStatus</a> (<a class="el" href="namespacejbus.html#a19d112b8b9f912fca094b41ce26c4fef">u8</a> &amp;percentOut)</td></tr>
 <tr class="memdesc:a50401a9a9d658f1f68e3dde61d5dfbce"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get status of last asynchronous operation.  <a href="#a50401a9a9d658f1f68e3dde61d5dfbce">More...</a><br /></td></tr>
@@ -152,9 +152,15 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:aad76a9374e4e151540f678798548a843"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacejbus.html#a7118bfa3cb9d51e588418220bca20117">EJoyReturn</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classjbus_1_1Endpoint.html#aad76a9374e4e151540f678798548a843">GBAJoyBootAsync</a> (<a class="el" href="namespacejbus.html#a33e5022738a0799c066372ce74d04c37">s32</a> paletteColor, <a class="el" href="namespacejbus.html#a33e5022738a0799c066372ce74d04c37">s32</a> paletteSpeed, const <a class="el" href="namespacejbus.html#a19d112b8b9f912fca094b41ce26c4fef">u8</a> *programp, <a class="el" href="namespacejbus.html#a33e5022738a0799c066372ce74d04c37">s32</a> length, <a class="el" href="namespacejbus.html#a19d112b8b9f912fca094b41ce26c4fef">u8</a> *status, <a class="el" href="namespacejbus.html#ae1577e03ea8c6e27361cb389c992280d">FGBACallback</a> &amp;&amp;callback)</td></tr>
 <tr class="memdesc:aad76a9374e4e151540f678798548a843"><td class="mdescLeft">&#160;</td><td class="mdescRight">Initiate JoyBoot sequence on this endpoint.  <a href="#aad76a9374e4e151540f678798548a843">More...</a><br /></td></tr>
 <tr class="separator:aad76a9374e4e151540f678798548a843"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:acb5167184768ea65d026adc531f237b9"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classjbus_1_1Endpoint.html#acb5167184768ea65d026adc531f237b9">GetChan</a> () const </td></tr>
-<tr class="memdesc:acb5167184768ea65d026adc531f237b9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get virtual SI channel assigned to this endpoint.  <a href="#acb5167184768ea65d026adc531f237b9">More...</a><br /></td></tr>
-<tr class="separator:acb5167184768ea65d026adc531f237b9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6aa5fa9049740d739b03e303719a764a"><td class="memItemLeft" align="right" valign="top">unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classjbus_1_1Endpoint.html#a6aa5fa9049740d739b03e303719a764a">getChan</a> () const </td></tr>
+<tr class="memdesc:a6aa5fa9049740d739b03e303719a764a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get virtual SI channel assigned to this endpoint.  <a href="#a6aa5fa9049740d739b03e303719a764a">More...</a><br /></td></tr>
+<tr class="separator:a6aa5fa9049740d739b03e303719a764a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a21b883cf30eb52ca355163617960788e"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classjbus_1_1Endpoint.html#a21b883cf30eb52ca355163617960788e">setChan</a> (unsigned chan)</td></tr>
+<tr class="memdesc:a21b883cf30eb52ca355163617960788e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set virtual SI channel assigned to this endpoint.  <a href="#a21b883cf30eb52ca355163617960788e">More...</a><br /></td></tr>
+<tr class="separator:a21b883cf30eb52ca355163617960788e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a930f7ae80af4e13ff50122f2a54c63da"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classjbus_1_1Endpoint.html#a930f7ae80af4e13ff50122f2a54c63da">connected</a> () const </td></tr>
+<tr class="memdesc:a930f7ae80af4e13ff50122f2a54c63da"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get connection status of this endpoint.  <a href="#a930f7ae80af4e13ff50122f2a54c63da">More...</a><br /></td></tr>
+<tr class="separator:a930f7ae80af4e13ff50122f2a54c63da"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a39ddcbf5ac7078d59a4d99d291e3f0fa"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classjbus_1_1Endpoint.html#a39ddcbf5ac7078d59a4d99d291e3f0fa">Endpoint</a> (<a class="el" href="namespacejbus.html#a19d112b8b9f912fca094b41ce26c4fef">u8</a> chan, <a class="el" href="classjbus_1_1net_1_1Socket.html">net::Socket</a> &amp;&amp;data, <a class="el" href="classjbus_1_1net_1_1Socket.html">net::Socket</a> &amp;&amp;clock)</td></tr>
 <tr class="separator:a39ddcbf5ac7078d59a4d99d291e3f0fa"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad39f268d3bee438e5176cc7f4cf59675"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classjbus_1_1Endpoint.html#ad39f268d3bee438e5176cc7f4cf59675">~Endpoint</a> ()</td></tr>
@@ -203,8 +209,7 @@ Here is the caller graph for this function:</div>
 <div class="dyncontent">
 <div class="center"><img src="classjbus_1_1Endpoint_a39ddcbf5ac7078d59a4d99d291e3f0fa_icgraph.png" border="0" usemap="#classjbus_1_1Endpoint_a39ddcbf5ac7078d59a4d99d291e3f0fa_icgraph" alt=""/></div>
 <map name="classjbus_1_1Endpoint_a39ddcbf5ac7078d59a4d99d291e3f0fa_icgraph" id="classjbus_1_1Endpoint_a39ddcbf5ac7078d59a4d99d291e3f0fa_icgraph">
-<area shape="rect" id="node2" href="classjbus_1_1Endpoint.html#acb5167184768ea65d026adc531f237b9" title="Get virtual SI channel assigned to this endpoint. " alt="" coords="219,12,386,37"/>
-<area shape="rect" id="node3" href="classjbus_1_1ThreadLocalEndpoint.html#a0899b0293f9eb4b69763d8e1e21e58a9" title="Get virtual SI channel assigned to this endpoint. " alt="" coords="434,5,614,44"/>
+<area shape="rect" id="node2" href="classjbus_1_1Endpoint.html#a930f7ae80af4e13ff50122f2a54c63da" title="Get connection status of this endpoint. " alt="" coords="219,5,394,31"/>
 </map>
 </div>
 </p>
@@ -229,8 +234,7 @@ Here is the caller graph for this function:</div>
 <div class="dyncontent">
 <div class="center"><img src="classjbus_1_1Endpoint_ad39f268d3bee438e5176cc7f4cf59675_icgraph.png" border="0" usemap="#classjbus_1_1Endpoint_ad39f268d3bee438e5176cc7f4cf59675_icgraph" alt=""/></div>
 <map name="classjbus_1_1Endpoint_ad39f268d3bee438e5176cc7f4cf59675_icgraph" id="classjbus_1_1Endpoint_ad39f268d3bee438e5176cc7f4cf59675_icgraph">
-<area shape="rect" id="node2" href="classjbus_1_1Endpoint.html#acb5167184768ea65d026adc531f237b9" title="Get virtual SI channel assigned to this endpoint. " alt="" coords="227,12,394,37"/>
-<area shape="rect" id="node3" href="classjbus_1_1ThreadLocalEndpoint.html#a0899b0293f9eb4b69763d8e1e21e58a9" title="Get virtual SI channel assigned to this endpoint. " alt="" coords="442,5,622,44"/>
+<area shape="rect" id="node2" href="classjbus_1_1Endpoint.html#a930f7ae80af4e13ff50122f2a54c63da" title="Get connection status of this endpoint. " alt="" coords="227,5,402,31"/>
 </map>
 </div>
 </p>
@@ -238,6 +242,43 @@ Here is the caller graph for this function:</div>
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
+<a class="anchor" id="a930f7ae80af4e13ff50122f2a54c63da"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool jbus::Endpoint::connected </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Get connection status of this endpoint. </p>
+<dl class="section return"><dt>Returns</dt><dd>true if connected </dd></dl>
+
+<p><div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classjbus_1_1Endpoint_a930f7ae80af4e13ff50122f2a54c63da_cgraph.png" border="0" usemap="#classjbus_1_1Endpoint_a930f7ae80af4e13ff50122f2a54c63da_cgraph" alt=""/></div>
+<map name="classjbus_1_1Endpoint_a930f7ae80af4e13ff50122f2a54c63da_cgraph" id="classjbus_1_1Endpoint_a930f7ae80af4e13ff50122f2a54c63da_cgraph">
+<area shape="rect" id="node2" href="classjbus_1_1Endpoint.html#a39ddcbf5ac7078d59a4d99d291e3f0fa" title="jbus::Endpoint::Endpoint" alt="" coords="232,5,398,31"/>
+<area shape="rect" id="node3" href="classjbus_1_1Endpoint.html#ad39f268d3bee438e5176cc7f4cf59675" title="jbus::Endpoint::~Endpoint" alt="" coords="228,55,402,80"/>
+</map>
+</div>
+</p>
+
+</div>
+</div>
 <a class="anchor" id="a50401a9a9d658f1f68e3dde61d5dfbce"></a>
 <div class="memitem">
 <div class="memproto">
@@ -607,7 +648,7 @@ Here is the caller graph for this function:</div>
 
 </div>
 </div>
-<a class="anchor" id="acb5167184768ea65d026adc531f237b9"></a>
+<a class="anchor" id="a6aa5fa9049740d739b03e303719a764a"></a>
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
@@ -615,7 +656,7 @@ Here is the caller graph for this function:</div>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">int jbus::Endpoint::GetChan </td>
+          <td class="memname">unsigned jbus::Endpoint::getChan </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td> const</td>
@@ -629,28 +670,49 @@ Here is the caller graph for this function:</div>
 </div><div class="memdoc">
 
 <p>Get virtual SI channel assigned to this endpoint. </p>
-<dl class="section return"><dt>Returns</dt><dd>SI channel </dd></dl>
-
-<p><div class="dynheader">
-Here is the call graph for this function:</div>
-<div class="dyncontent">
-<div class="center"><img src="classjbus_1_1Endpoint_acb5167184768ea65d026adc531f237b9_cgraph.png" border="0" usemap="#classjbus_1_1Endpoint_acb5167184768ea65d026adc531f237b9_cgraph" alt=""/></div>
-<map name="classjbus_1_1Endpoint_acb5167184768ea65d026adc531f237b9_cgraph" id="classjbus_1_1Endpoint_acb5167184768ea65d026adc531f237b9_cgraph">
-<area shape="rect" id="node2" href="classjbus_1_1Endpoint.html#a39ddcbf5ac7078d59a4d99d291e3f0fa" title="jbus::Endpoint::Endpoint" alt="" coords="224,5,390,31"/>
-<area shape="rect" id="node3" href="classjbus_1_1Endpoint.html#ad39f268d3bee438e5176cc7f4cf59675" title="jbus::Endpoint::~Endpoint" alt="" coords="220,55,394,80"/>
-</map>
-</div>
-</p>
+<dl class="section return"><dt>Returns</dt><dd>SI channel [0,3] </dd></dl>
 
 <p><div class="dynheader">
 Here is the caller graph for this function:</div>
 <div class="dyncontent">
-<div class="center"><img src="classjbus_1_1Endpoint_acb5167184768ea65d026adc531f237b9_icgraph.png" border="0" usemap="#classjbus_1_1Endpoint_acb5167184768ea65d026adc531f237b9_icgraph" alt=""/></div>
-<map name="classjbus_1_1Endpoint_acb5167184768ea65d026adc531f237b9_icgraph" id="classjbus_1_1Endpoint_acb5167184768ea65d026adc531f237b9_icgraph">
-<area shape="rect" id="node2" href="classjbus_1_1ThreadLocalEndpoint.html#a0899b0293f9eb4b69763d8e1e21e58a9" title="Get virtual SI channel assigned to this endpoint. " alt="" coords="220,5,400,44"/>
+<div class="center"><img src="classjbus_1_1Endpoint_a6aa5fa9049740d739b03e303719a764a_icgraph.png" border="0" usemap="#classjbus_1_1Endpoint_a6aa5fa9049740d739b03e303719a764a_icgraph" alt=""/></div>
+<map name="classjbus_1_1Endpoint_a6aa5fa9049740d739b03e303719a764a_icgraph" id="classjbus_1_1Endpoint_a6aa5fa9049740d739b03e303719a764a_icgraph">
+<area shape="rect" id="node2" href="classjbus_1_1ThreadLocalEndpoint.html#a1205d985c7e71b42a9cf2c1be06383b2" title="Get virtual SI channel assigned to this endpoint. " alt="" coords="217,5,397,44"/>
 </map>
 </div>
 </p>
+
+</div>
+</div>
+<a class="anchor" id="a21b883cf30eb52ca355163617960788e"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void jbus::Endpoint::setChan </td>
+          <td>(</td>
+          <td class="paramtype">unsigned&#160;</td>
+          <td class="paramname"><em>chan</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Set virtual SI channel assigned to this endpoint. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">chan</td><td>SI channel [0,3] </td></tr>
+  </table>
+  </dd>
+</dl>
 
 </div>
 </div>
@@ -667,7 +729,7 @@ Here is the caller graph for this function:</div>
       </table>
 </div><div class="memdoc">
 
-<p>Request stop of I/O thread and block until joined. Further use of this <a class="el" href="classjbus_1_1Endpoint.html">Endpoint</a> is undefined behavior. The destructor calls this implicitly. </p>
+<p>Request stop of I/O thread and block until joined. Further use of this <a class="el" href="classjbus_1_1Endpoint.html">Endpoint</a> will return GBA_NOT_READY. The destructor calls this implicitly. </p>
 
 </div>
 </div>

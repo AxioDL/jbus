@@ -22,7 +22,7 @@ var searchData=
   ['gbaresetasync',['GBAResetAsync',['../classjbus_1_1Endpoint.html#a81d86608ffb93b3211a915fa1712beb4',1,'jbus::Endpoint::GBAResetAsync()'],['../classjbus_1_1ThreadLocalEndpoint.html#aab260d6d6686c2c3fc2ff31f57cf436d',1,'jbus::ThreadLocalEndpoint::GBAResetAsync()']]],
   ['gbawrite',['GBAWrite',['../classjbus_1_1Endpoint.html#a6e59373aa28a23097129470deaeb46dd',1,'jbus::Endpoint']]],
   ['gbawriteasync',['GBAWriteAsync',['../classjbus_1_1Endpoint.html#a06506d0cfa26d461f239ed761264d7b0',1,'jbus::Endpoint::GBAWriteAsync()'],['../classjbus_1_1ThreadLocalEndpoint.html#aa1625ccaf1f817831d56cf32554bc40c',1,'jbus::ThreadLocalEndpoint::GBAWriteAsync()']]],
-  ['getchan',['GetChan',['../classjbus_1_1Endpoint.html#acb5167184768ea65d026adc531f237b9',1,'jbus::Endpoint::GetChan()'],['../classjbus_1_1ThreadLocalEndpoint.html#a0899b0293f9eb4b69763d8e1e21e58a9',1,'jbus::ThreadLocalEndpoint::GetChan()']]],
+  ['getchan',['getChan',['../classjbus_1_1Endpoint.html#a6aa5fa9049740d739b03e303719a764a',1,'jbus::Endpoint::getChan()'],['../classjbus_1_1ThreadLocalEndpoint.html#a1205d985c7e71b42a9cf2c1be06383b2',1,'jbus::ThreadLocalEndpoint::getChan()']]],
   ['getgcticks',['GetGCTicks',['../namespacejbus.html#a5944719111a14f5920ec765e5dcf71db',1,'jbus']]],
   ['getinternalsocket',['GetInternalSocket',['../classjbus_1_1net_1_1Socket.html#a66864f8061a4d96fb9ceabc808532046',1,'jbus::net::Socket']]]
 ];
