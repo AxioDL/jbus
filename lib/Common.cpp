@@ -1,5 +1,6 @@
 #ifndef _WIN32
 #include <unistd.h>
+#include <sys/time.h>
 #if __APPLE__
 #include <mach/mach_time.h>
 #endif
@@ -27,7 +28,7 @@ u64 GetGCTicks()
 {
 #if __APPLE__
     return mach_absolute_time() * MachToDolphinNum / MachToDolphinDenom;
-#elif __linux__
+#elif __linux__ || __FreeBSD__
     struct timespec tp;
     clock_gettime(CLOCK_MONOTONIC, &tp);
 

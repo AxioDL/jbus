@@ -1,7 +1,7 @@
 JBus Documentation {#mainpage}
 ==============================
 
-JBus functions as a server for acceping connections from GBA emulator clients.
+JBus functions as a server for accepting connections from GBA emulator clients.
 The jbus::Listener class may be constructed and [started](@ref jbus::Listener::start)
 to enque incoming jbus::Endpoint instances.
 
