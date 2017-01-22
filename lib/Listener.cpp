@@ -12,7 +12,7 @@ void Listener::listenerProc()
     printf("JoyBus listener started\n");
 #endif
 
-    net::IPAddress localhost("0.0.0.0");
+    net::IPAddress localhost("127.0.0.1");
     bool dataBound = false;
     bool clockBound = false;
     while (m_running && (!dataBound || !clockBound))

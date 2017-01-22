@@ -134,7 +134,7 @@ class Socket
         m_socket = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
         if (m_socket == -1)
         {
-            fprintf(stderr, "Can't allocate socket\n");
+            fprintf(stderr, "jbus: Can't allocate socket\n");
             return false;
         }
 
@@ -223,14 +223,14 @@ public:
         if (bind(m_socket, reinterpret_cast<sockaddr*>(&addr), sizeof(addr)) == -1)
         {
             /* Not likely to happen, but... */
-            fprintf(stderr, "Failed to bind listener socket to port %d\n", port);
+            fprintf(stderr, "jbus: Failed to bind listener socket to port %d\n", port);
             return false;
         }
 
         if (::listen(m_socket, 0) == -1)
         {
             /* Oops, socket is deaf */
-            fprintf(stderr, "Failed to listen to port %d\n", port);
+            fprintf(stderr, "jbus: Failed to listen to port %d\n", port);
             return false;
         }
 
@@ -252,11 +252,11 @@ public:
 #ifndef _WIN32
             EResult res = (errno == EAGAIN) ? EResult::Busy : EResult::Error;
             if (res == EResult::Error)
-                fprintf(stderr, "Failed to accept incoming connection: %s\n", strerror(errno));
+                fprintf(stderr, "jbus: Failed to accept incoming connection: %s\n", strerror(errno));
 #else
             EResult res = LastWSAError();
             if (res == EResult::Error)
-                fprintf(stderr, "Failed to accept incoming connection\n");
+                fprintf(stderr, "jbus: Failed to accept incoming connection\n");
 #endif
             return res;
         }

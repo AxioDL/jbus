@@ -5,6 +5,39 @@
 namespace jbus
 {
 
+void Endpoint::KawasedoChallenge::DSPSecParms::ProcessGBACrypto()
+{
+    /* Unwrap key from challenge using 'sedo' magic number (to encrypt JoyBoot program) */
+    x20_key = x0_gbaChallenge ^ 0x6f646573;
+
+    /* Pack palette parameters */
+    u16 paletteSpeedCoded;
+    s16 logoSpeed = static_cast<s8>(x8_logoSpeed);
+    if (logoSpeed < 0)
+      paletteSpeedCoded = ((-logoSpeed + 2) * 2) | (x4_logoPalette << 4);
+    else if (logoSpeed == 0)
+      paletteSpeedCoded = (x4_logoPalette * 2) | 0x70;
+    else  /* logo_speed > 0 */
+      paletteSpeedCoded = ((logoSpeed - 1) * 2) | (x4_logoPalette << 4);
+
+    /* JoyBoot ROMs start with a padded header; this is the length beyond that header */
+    s32 lengthNoHeader = ROUND_UP_8(xc_progLength) - 0x200;
+
+    /* The JoyBus protocol transmits in 4-byte packets while flipping a state flag;
+     * so the GBA BIOS counts the program length in 8-byte packet-pairs */
+    u16 packetPairCount = (lengthNoHeader < 0) ? 0 : lengthNoHeader / 8;
+    paletteSpeedCoded |= (packetPairCount & 0x4000) >> 14;
+
+    /* Pack together encoded transmission parameters */
+    u32 t1 = (((packetPairCount << 16) | 0x3f80) & 0x3f80ffff) * 2;
+    t1 += (static_cast<s16>(static_cast<s8>(t1 >> 8)) & packetPairCount) << 16;
+    u32 t2 = ((paletteSpeedCoded & 0xff) << 16) + (t1 & 0xff0000) + ((t1 >> 8) & 0xffff00);
+    u32 t3 = paletteSpeedCoded << 16 | ((t2 << 8) & 0xff000000) | (t1 >> 16) | 0x80808080;
+
+    /* Wrap with 'Kawa' or 'sedo' (Kawasedo is the author of the BIOS cipher) */
+    x24_authInitCode = t3 ^ ((t3 & 0x200) != 0 ? 0x6f646573 : 0x6177614b);
+}
+
 void Endpoint::KawasedoChallenge::_0Reset(ThreadLocalEndpoint& endpoint, EJoyReturn status)
 {
     if (status != GBA_READY ||
@@ -87,7 +120,7 @@ void Endpoint::KawasedoChallenge::_DSPCryptoInit()
 
 void Endpoint::KawasedoChallenge::_DSPCryptoDone(ThreadLocalEndpoint& endpoint)
 {
-    x58_currentKey = xf8_dspHmac.x20_publicKey;
+    x58_currentKey = xf8_dspHmac.x20_key;
     x5c_initMessage = xf8_dspHmac.x24_authInitCode;
 
     x20_byteInWindow = ROUND_UP_8(xc_progLen);
