@@ -39,7 +39,7 @@ class IPAddress
     uint32_t m_address = 0;
     bool m_valid = false;
 
-    void resolve(const std::string& address)
+    void resolve(std::string_view address)
     {
         m_address = 0;
         m_valid = false;
@@ -60,7 +60,7 @@ class IPAddress
         {
             /* Try to convert the address as a byte representation ("xxx.xxx.xxx.xxx") */
             struct in_addr addr;
-            if (inet_pton(AF_INET, address.c_str(), &addr) == 1)
+            if (inet_pton(AF_INET, address.data(), &addr) == 1)
             {
                 m_address = addr.s_addr;
                 m_valid = true;
@@ -72,7 +72,7 @@ class IPAddress
                 memset(&hints, 0, sizeof(hints));
                 hints.ai_family = AF_INET;
                 addrinfo* result = NULL;
-                if (getaddrinfo(address.c_str(), NULL, &hints, &result) == 0)
+                if (getaddrinfo(address.data(), NULL, &hints, &result) == 0)
                 {
                     if (result)
                     {
@@ -87,7 +87,7 @@ class IPAddress
     }
 
 public:
-    IPAddress(const std::string& address)
+    IPAddress(std::string_view address)
     {
         resolve(address);
     }
