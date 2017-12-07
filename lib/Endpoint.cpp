@@ -5,6 +5,8 @@
 namespace jbus
 {
 
+#define ROUND_UP_8(val) (((val) + 7) & ~7)
+
 void Endpoint::KawasedoChallenge::DSPSecParms::ProcessGBACrypto()
 {
     /* Unwrap key from challenge using 'sedo' magic number (to encrypt JoyBoot program) */
@@ -389,7 +391,7 @@ void Endpoint::KawasedoChallenge::_8BootDone(ThreadLocalEndpoint& endpoint, EJoy
 Endpoint::KawasedoChallenge::KawasedoChallenge(Endpoint& endpoint, s32 paletteColor, s32 paletteSpeed,
                                                const u8* programp, s32 length, u8* status, FGBACallback&& callback)
 : x0_pColor(paletteColor), x4_pSpeed(paletteSpeed), x8_progPtr(programp), xc_progLen(length),
-  x10_statusPtr(status), x14_callback(std::move(callback)), x34_bytesSent(0)
+  x10_statusPtr(status), x14_callback(std::move(callback)), x34_bytesSent(0), m_initialized(true)
 {
     if (endpoint.GBAGetStatusAsync(x10_statusPtr,
         bindThis(&KawasedoChallenge::_0Reset)) != GBA_READY)
@@ -608,8 +610,8 @@ EJoyReturn Endpoint::GBAGetProcessStatus(u8& percentOut)
     std::unique_lock<std::mutex> lk(m_syncLock);
     if (m_joyBoot)
     {
-        percentOut = m_joyBoot->percentComplete();
-        if (!m_joyBoot->isDone())
+        percentOut = m_joyBoot.percentComplete();
+        if (!m_joyBoot.isDone())
             return GBA_BUSY;
     }
 
@@ -803,9 +805,9 @@ EJoyReturn Endpoint::GBAJoyBootAsync(s32 paletteColor, s32 paletteSpeed,
     if (programp[0xac] * programp[0xac] * programp[0xac] * programp[0xac] == 0)
         return GBA_JOYBOOT_ERR_INVALID;
 
-    m_joyBoot.emplace(*this, paletteColor, paletteSpeed, programp, length, status,
-                      std::move(callback));
-    if (!m_joyBoot->started())
+    m_joyBoot = KawasedoChallenge(*this, paletteColor, paletteSpeed, programp, length, status,
+                                  std::move(callback));
+    if (!m_joyBoot.started())
         return GBA_NOT_READY;
 
     return GBA_READY;

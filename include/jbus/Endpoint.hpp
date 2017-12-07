@@ -3,7 +3,6 @@
 
 #include "Common.hpp"
 #include "Socket.hpp"
-#include "optional.hpp"
 #include <thread>
 #include <mutex>
 #include <condition_variable>
@@ -67,6 +66,7 @@ class Endpoint
         s32 x60_gameId;
         u32 x64_totalBytes;
         bool m_started = true;
+		bool m_initialized = false;
 
         void _0Reset(ThreadLocalEndpoint& endpoint, EJoyReturn status);
         void _1GetStatus(ThreadLocalEndpoint& endpoint, EJoyReturn status);
@@ -86,6 +86,7 @@ class Endpoint
         }
 
     public:
+		KawasedoChallenge() = default;
         KawasedoChallenge(Endpoint& endpoint, s32 paletteColor, s32 paletteSpeed,
                           const u8* programp, s32 length, u8* status, FGBACallback&& callback);
         bool started() const { return m_started; }
@@ -96,6 +97,7 @@ class Endpoint
             return x34_bytesSent * 100 / x64_totalBytes;
         }
         bool isDone() const { return !x14_callback; }
+		operator bool() const { return m_initialized; }
     };
 
     friend class ThreadLocalEndpoint;
@@ -117,7 +119,7 @@ class Endpoint
     std::mutex m_syncLock;
     std::condition_variable m_syncCv;
     std::condition_variable m_issueCv;
-    std::experimental::optional<KawasedoChallenge> m_joyBoot;
+    KawasedoChallenge m_joyBoot;
     FGBACallback m_callback;
     u8 m_buffer[5];
     u8* m_readDstPtr = nullptr;
