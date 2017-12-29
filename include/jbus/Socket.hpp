@@ -8,7 +8,7 @@
 #include <arpa/inet.h>
 #include <netdb.h>
 #include <unistd.h>
-#include <errno.h>
+#include <cerrno>
 #else
 #include <winsock2.h>
 #include <Ws2tcpip.h>
@@ -21,9 +21,7 @@
 
 #include "Common.hpp"
 
-namespace jbus
-{
-namespace net
+namespace jbus::net
 {
 
 /* Define the low-level send/receive flags, which depend on the OS */
@@ -371,7 +369,6 @@ public:
     SocketTp GetInternalSocket() const { return m_socket; }
 };
 
-}
 }
 
 #endif // JBUS_SOCKET_HPP

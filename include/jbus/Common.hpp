@@ -2,8 +2,8 @@
 #define JBUS_COMMON_HPP
 
 #include <functional>
-#include <stdint.h>
-#include <stdlib.h>
+#include <cstdint>
+#include <cstdlib>
 
 namespace jbus
 {

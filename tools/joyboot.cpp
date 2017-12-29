@@ -1,4 +1,4 @@
-#include <stdio.h>
+#include <cstdio>
 #include "jbus/Listener.hpp"
 #include "jbus/Endpoint.hpp"
 #include <functional>
