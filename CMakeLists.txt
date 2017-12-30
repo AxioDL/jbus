@@ -13,7 +13,7 @@ endif()
 include_directories(include)
 add_library(jbus
             include/jbus/optional.hpp
-            include/jbus/Socket.hpp
+            lib/Socket.cpp include/jbus/Socket.hpp
             lib/Common.cpp include/jbus/Common.hpp
             lib/Endpoint.cpp include/jbus/Endpoint.hpp
             lib/Listener.cpp include/jbus/Listener.hpp)
