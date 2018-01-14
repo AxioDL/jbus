@@ -388,10 +388,13 @@ void Endpoint::KawasedoChallenge::_8BootDone(ThreadLocalEndpoint& endpoint, EJoy
     }
 }
 
-Endpoint::KawasedoChallenge::KawasedoChallenge(Endpoint& endpoint, s32 paletteColor, s32 paletteSpeed,
+Endpoint::KawasedoChallenge::KawasedoChallenge(s32 paletteColor, s32 paletteSpeed,
                                                const u8* programp, s32 length, u8* status, FGBACallback&& callback)
 : x0_pColor(paletteColor), x4_pSpeed(paletteSpeed), x8_progPtr(programp), xc_progLen(length),
   x10_statusPtr(status), x14_callback(std::move(callback)), x34_bytesSent(0), m_initialized(true)
+{}
+
+void Endpoint::KawasedoChallenge::start(Endpoint& endpoint)
 {
     if (endpoint.GBAGetStatusAsync(x10_statusPtr,
         bindThis(&KawasedoChallenge::_0Reset)) != GBA_READY)
@@ -805,8 +808,9 @@ EJoyReturn Endpoint::GBAJoyBootAsync(s32 paletteColor, s32 paletteSpeed,
     if (programp[0xac] * programp[0xac] * programp[0xac] * programp[0xac] == 0)
         return GBA_JOYBOOT_ERR_INVALID;
 
-    m_joyBoot = KawasedoChallenge(*this, paletteColor, paletteSpeed, programp, length, status,
+    m_joyBoot = KawasedoChallenge(paletteColor, paletteSpeed, programp, length, status,
                                   std::move(callback));
+    m_joyBoot.start(*this);
     if (!m_joyBoot.started())
         return GBA_NOT_READY;
 

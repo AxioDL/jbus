@@ -87,8 +87,9 @@ class Endpoint
 
     public:
 		KawasedoChallenge() = default;
-        KawasedoChallenge(Endpoint& endpoint, s32 paletteColor, s32 paletteSpeed,
+        KawasedoChallenge(s32 paletteColor, s32 paletteSpeed,
                           const u8* programp, s32 length, u8* status, FGBACallback&& callback);
+        void start(Endpoint& endpoint);
         bool started() const { return m_started; }
         u8 percentComplete() const
         {
