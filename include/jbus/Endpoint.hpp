@@ -1,5 +1,4 @@
-#ifndef JBUS_ENDPOINT_HPP
-#define JBUS_ENDPOINT_HPP
+#pragma once
 
 #include "Common.hpp"
 #include "Socket.hpp"
@@ -281,4 +280,3 @@ public:
 
 }
 
-#endif // JBUS_ENDPOINT_HPP

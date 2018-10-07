@@ -1,5 +1,4 @@
-#ifndef JBUS_COMMON_HPP
-#define JBUS_COMMON_HPP
+#pragma once
 
 #include <functional>
 #include <cstdint>
@@ -185,4 +184,3 @@ void Initialize();
 
 }
 
-#endif // JBUS_COMMON_HPP

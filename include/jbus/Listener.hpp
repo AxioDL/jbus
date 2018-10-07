@@ -1,5 +1,4 @@
-#ifndef JBUS_LISTENER_HPP
-#define JBUS_LISTENER_HPP
+#pragma once
 
 #include "Common.hpp"
 #include "Socket.hpp"
@@ -41,4 +40,3 @@ public:
 
 }
 
-#endif // JBUS_LISTENER_HPP
