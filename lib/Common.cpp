@@ -3,6 +3,8 @@
 #include <sys/time.h>
 #if __APPLE__
 #include <mach/mach_time.h>
+#elif __linux__ || __FreeBSD__
+#include <time.h>
 #endif
 #else
 #ifndef WIN32_LEAN_AND_MEAN
