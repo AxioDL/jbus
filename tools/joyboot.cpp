@@ -91,7 +91,7 @@ int main(int argc, char** argv) {
     }
     jbus::s64 curTime = jbus::GetGCTicks();
     jbus::s64 passedTicks = curTime - start;
-    if (passedTicks > jbus::GetGCTicksPerSec() * 10) {
+    if (passedTicks > jbus::s64(jbus::GetGCTicksPerSec()) * 10) {
       fprintf(stderr, "JoyBoot timeout\n");
       return 1;
     }
@@ -102,7 +102,7 @@ int main(int argc, char** argv) {
   while (!DonePoll(*endpoint)) {
     jbus::s64 curTime = jbus::GetGCTicks();
     jbus::s64 passedTicks = curTime - start;
-    if (passedTicks > jbus::GetGCTicksPerSec() * 15) {
+    if (passedTicks > jbus::s64(jbus::GetGCTicksPerSec()) * 15) {
       fprintf(stderr, "JoyBoot timeout\n");
       return 1;
     }

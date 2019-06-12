@@ -10,14 +10,13 @@ elseif(UNIX AND NOT APPLE)
 set(JBUS_PLAT_LIBS pthread)
 endif()
 
-include_directories(include)
 add_library(jbus
-            include/jbus/optional.hpp
             lib/Socket.cpp include/jbus/Socket.hpp
             lib/Common.cpp include/jbus/Common.hpp
             lib/Endpoint.cpp include/jbus/Endpoint.hpp
             lib/Listener.cpp include/jbus/Listener.hpp)
 target_link_libraries(jbus ${JBUS_PLAT_LIBS})
+target_include_directories(jbus PUBLIC include)
 
 add_executable(joyboot tools/joyboot.cpp)
 target_link_libraries(joyboot jbus)
