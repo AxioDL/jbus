@@ -43,8 +43,8 @@ void Listener::listenerProc() {
   }
 
   /* We use blocking I/O since we have a dedicated transfer thread */
-  net::Socket acceptData = {true};
-  net::Socket acceptClock = {true};
+  net::Socket acceptData{true};
+  net::Socket acceptClock{true};
   std::string hostname;
   while (m_running) {
     if (m_dataServer.accept(acceptData, hostname) == net::Socket::EResult::OK) {

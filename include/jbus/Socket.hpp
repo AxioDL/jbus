@@ -24,10 +24,10 @@ class IPAddress {
   void resolve(const std::string& address);
 
 public:
-  IPAddress(const std::string& address) { resolve(address); }
+  explicit IPAddress(const std::string& address) { resolve(address); }
 
   uint32_t toInteger() const;
-  operator bool() const { return m_valid; }
+  explicit operator bool() const { return m_valid; }
 };
 
 /** Server-oriented TCP socket class derived from SFML */
@@ -50,7 +50,7 @@ public:
   static EResult LastWSAError();
 #endif
 
-  Socket(bool blocking) : m_isBlocking(blocking) {}
+  explicit Socket(bool blocking) : m_isBlocking(blocking) {}
   ~Socket() { close(); }
 
   Socket(const Socket& other) = delete;
@@ -76,7 +76,7 @@ public:
   EResult recv(void* buf, size_t len, size_t& transferred);
   EResult recv(void* buf, size_t len);
 
-  operator bool() const { return isOpen(); }
+  explicit operator bool() const { return isOpen(); }
 
   SocketTp GetInternalSocket() const { return m_socket; }
 };
