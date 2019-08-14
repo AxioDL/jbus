@@ -21,13 +21,13 @@ class IPAddress {
   uint32_t m_address = 0;
   bool m_valid = false;
 
-  void resolve(const std::string& address);
+  void resolve(const std::string& address) noexcept;
 
 public:
-  explicit IPAddress(const std::string& address) { resolve(address); }
+  explicit IPAddress(const std::string& address) noexcept { resolve(address); }
 
-  uint32_t toInteger() const;
-  explicit operator bool() const { return m_valid; }
+  uint32_t toInteger() const noexcept;
+  explicit operator bool() const noexcept { return m_valid; }
 };
 
 /** Server-oriented TCP socket class derived from SFML */
@@ -40,23 +40,23 @@ class Socket {
   SocketTp m_socket = -1;
   bool m_isBlocking;
 
-  bool openSocket();
-  void setRemoteSocket(int remSocket);
+  bool openSocket() noexcept;
+  void setRemoteSocket(int remSocket) noexcept;
 
 public:
   enum class EResult { OK, Error, Busy };
 
 #ifdef _WIN32
-  static EResult LastWSAError();
+  static EResult LastWSAError() noexcept;
 #endif
 
-  explicit Socket(bool blocking) : m_isBlocking(blocking) {}
-  ~Socket() { close(); }
+  explicit Socket(bool blocking) noexcept : m_isBlocking(blocking) {}
+  ~Socket() noexcept { close(); }
 
   Socket(const Socket& other) = delete;
   Socket& operator=(const Socket& other) = delete;
-  Socket(Socket&& other) : m_socket(other.m_socket), m_isBlocking(other.m_isBlocking) { other.m_socket = -1; }
-  Socket& operator=(Socket&& other) {
+  Socket(Socket&& other) noexcept : m_socket(other.m_socket), m_isBlocking(other.m_isBlocking) { other.m_socket = -1; }
+  Socket& operator=(Socket&& other) noexcept {
     close();
     m_socket = other.m_socket;
     other.m_socket = -1;
@@ -64,21 +64,21 @@ public:
     return *this;
   }
 
-  void setBlocking(bool blocking);
-  bool isOpen() const { return m_socket != -1; }
-  bool openAndListen(const IPAddress& address, uint32_t port);
-  EResult accept(Socket& remoteSocketOut, sockaddr_in& fromAddress);
-  EResult accept(Socket& remoteSocketOut);
+  void setBlocking(bool blocking) noexcept;
+  bool isOpen() const noexcept { return m_socket != -1; }
+  bool openAndListen(const IPAddress& address, uint32_t port) noexcept;
+  EResult accept(Socket& remoteSocketOut, sockaddr_in& fromAddress) noexcept;
+  EResult accept(Socket& remoteSocketOut) noexcept;
   EResult accept(Socket& remoteSocketOut, std::string& fromHostname);
-  void close();
-  EResult send(const void* buf, size_t len, size_t& transferred);
-  EResult send(const void* buf, size_t len);
-  EResult recv(void* buf, size_t len, size_t& transferred);
-  EResult recv(void* buf, size_t len);
+  void close() noexcept;
+  EResult send(const void* buf, size_t len, size_t& transferred) noexcept;
+  EResult send(const void* buf, size_t len) noexcept;
+  EResult recv(void* buf, size_t len, size_t& transferred) noexcept;
+  EResult recv(void* buf, size_t len) noexcept;
 
-  explicit operator bool() const { return isOpen(); }
+  explicit operator bool() const noexcept { return isOpen(); }
 
-  SocketTp GetInternalSocket() const { return m_socket; }
+  SocketTp GetInternalSocket() const noexcept { return m_socket; }
 };
 
 } // namespace jbus::net
