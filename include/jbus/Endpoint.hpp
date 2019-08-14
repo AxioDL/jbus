@@ -91,7 +91,7 @@ class Endpoint {
       return x34_bytesSent * 100 / x64_totalBytes;
     }
     bool isDone() const { return !x14_callback; }
-    operator bool() const { return m_initialized; }
+    explicit operator bool() const { return m_initialized; }
   };
 
   friend class ThreadLocalEndpoint;
