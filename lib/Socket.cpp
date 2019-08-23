@@ -22,7 +22,7 @@ static const int _flags = MSG_NOSIGNAL;
 static const int _flags = 0;
 #endif
 
-void IPAddress::resolve(const std::string& address) {
+void IPAddress::resolve(const std::string& address) noexcept {
   m_address = 0;
   m_valid = false;
 
@@ -58,7 +58,7 @@ void IPAddress::resolve(const std::string& address) {
   }
 }
 
-uint32_t IPAddress::toInteger() const { return ntohl(m_address); }
+uint32_t IPAddress::toInteger() const noexcept { return ntohl(m_address); }
 
 static sockaddr_in createAddress(uint32_t address, unsigned short port) {
   sockaddr_in addr;
@@ -74,7 +74,7 @@ static sockaddr_in createAddress(uint32_t address, unsigned short port) {
   return addr;
 }
 
-bool Socket::openSocket() {
+bool Socket::openSocket() noexcept {
   if (isOpen())
     return false;
 
@@ -95,7 +95,7 @@ bool Socket::openSocket() {
   return true;
 }
 
-void Socket::setRemoteSocket(int remSocket) {
+void Socket::setRemoteSocket(int remSocket) noexcept {
   close();
   m_socket = remSocket;
   setBlocking(m_isBlocking);
@@ -113,7 +113,7 @@ Socket::EResult Socket::LastWSAError() {
 }
 #endif
 
-void Socket::setBlocking(bool blocking) {
+void Socket::setBlocking(bool blocking) noexcept {
   m_isBlocking = blocking;
 #ifndef _WIN32
   int status = fcntl(m_socket, F_GETFL);
@@ -127,7 +127,7 @@ void Socket::setBlocking(bool blocking) {
 #endif
 }
 
-bool Socket::openAndListen(const IPAddress& address, uint32_t port) {
+bool Socket::openAndListen(const IPAddress& address, uint32_t port) noexcept  {
   if (!openSocket())
     return false;
 
@@ -147,7 +147,7 @@ bool Socket::openAndListen(const IPAddress& address, uint32_t port) {
   return true;
 }
 
-Socket::EResult Socket::accept(Socket& remoteSocketOut, sockaddr_in& fromAddress) {
+Socket::EResult Socket::accept(Socket& remoteSocketOut, sockaddr_in& fromAddress) noexcept {
   if (!isOpen())
     return EResult::Error;
 
@@ -175,7 +175,7 @@ Socket::EResult Socket::accept(Socket& remoteSocketOut, sockaddr_in& fromAddress
   return EResult::OK;
 }
 
-Socket::EResult Socket::accept(Socket& remoteSocketOut) {
+Socket::EResult Socket::accept(Socket& remoteSocketOut) noexcept {
   sockaddr_in fromAddress;
   return accept(remoteSocketOut, fromAddress);
 }
@@ -191,7 +191,7 @@ Socket::EResult Socket::accept(Socket& remoteSocketOut, std::string& fromHostnam
   return res;
 }
 
-void Socket::close() {
+void Socket::close() noexcept {
   if (!isOpen())
     return;
 #ifndef _WIN32
@@ -202,7 +202,7 @@ void Socket::close() {
   m_socket = -1;
 }
 
-Socket::EResult Socket::send(const void* buf, size_t len, size_t& transferred) {
+Socket::EResult Socket::send(const void* buf, size_t len, size_t& transferred) noexcept {
   transferred = 0;
   if (!isOpen())
     return EResult::Error;
@@ -229,12 +229,12 @@ Socket::EResult Socket::send(const void* buf, size_t len, size_t& transferred) {
   return EResult::OK;
 }
 
-Socket::EResult Socket::send(const void* buf, size_t len) {
+Socket::EResult Socket::send(const void* buf, size_t len) noexcept  {
   size_t transferred;
   return send(buf, len, transferred);
 }
 
-Socket::EResult Socket::recv(void* buf, size_t len, size_t& transferred) {
+Socket::EResult Socket::recv(void* buf, size_t len, size_t& transferred) noexcept {
   transferred = 0;
   if (!isOpen())
     return EResult::Error;
@@ -261,7 +261,7 @@ Socket::EResult Socket::recv(void* buf, size_t len, size_t& transferred) {
   return EResult::OK;
 }
 
-Socket::EResult Socket::recv(void* buf, size_t len) {
+Socket::EResult Socket::recv(void* buf, size_t len) noexcept {
   size_t transferred;
   return recv(buf, len, transferred);
 }
