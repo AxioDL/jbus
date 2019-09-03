@@ -1,5 +1,7 @@
 #include "jbus/Listener.hpp"
 
+#include <cstdint>
+
 #include "jbus/Common.hpp"
 #include "jbus/Endpoint.hpp"
 
@@ -10,6 +12,8 @@
 #endif
 
 namespace jbus {
+constexpr uint32_t DataPort = 0xd6ba;
+constexpr uint32_t ClockPort = 0xc10c;
 
 void Listener::listenerProc() {
 #if LOG_LISTENER
@@ -29,7 +33,7 @@ void Listener::listenerProc() {
         WaitGCTicks(GetGCTicksPerSec());
       } else {
 #if LOG_LISTENER
-        printf("data listening on port %d\n", DataPort);
+        printf("data listening on port %u\n", DataPort);
 #endif
       }
     }
@@ -42,7 +46,7 @@ void Listener::listenerProc() {
         WaitGCTicks(GetGCTicksPerSec());
       } else {
 #if LOG_LISTENER
-        printf("clock listening on port %d\n", ClockPort);
+        printf("clock listening on port %u\n", ClockPort);
 #endif
       }
     }
