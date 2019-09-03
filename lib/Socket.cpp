@@ -108,7 +108,7 @@ void Socket::setRemoteSocket(int remSocket) noexcept {
 }
 
 #ifdef _WIN32
-Socket::EResult Socket::LastWSAError() {
+Socket::EResult Socket::LastWSAError() noexcept {
   switch (WSAGetLastError()) {
   case WSAEWOULDBLOCK:
   case WSAEALREADY:
