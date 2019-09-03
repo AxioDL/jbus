@@ -80,7 +80,7 @@ void Listener::listenerProc() {
 void Listener::start() {
   stop();
   m_running = true;
-  m_listenerThread = std::thread(std::bind(&Listener::listenerProc, this));
+  m_listenerThread = std::thread(&Listener::listenerProc, this);
 }
 
 void Listener::stop() {
