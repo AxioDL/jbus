@@ -1,5 +1,6 @@
 #pragma once
 
+#include <array>
 #include <condition_variable>
 #include <cstddef>
 #include <functional>
@@ -11,9 +12,13 @@
 
 namespace jbus {
 
+using ReadWriteBuffer = std::array<u8, 4>;
+
 /** Main class for performing JoyBoot and subsequent JoyBus I/O operations.
  *  Instances should be obtained though the jbus::Listener::accept method. */
 class Endpoint {
+  using Buffer = std::array<u8, 5>;
+
   /** Self-contained class for solving Kawasedo's GBA BootROM challenge.
    *  GBA will boot client_pad.bin code on completion.
    *
@@ -51,14 +56,14 @@ class Endpoint {
     u32 xc_progLen;
     u8* x10_statusPtr;
     FGBACallback x14_callback;
-    u8 x18_readBuf[4];
-    u8 x1c_writeBuf[4];
+    ReadWriteBuffer x18_readBuf;
+    ReadWriteBuffer x1c_writeBuf;
     s32 x20_byteInWindow;
     u64 x28_ticksAfterXf;
     u32 x30_justStarted;
     u32 x34_bytesSent;
     u32 x38_crc;
-    u32 x3c_checkStore[7];
+    std::array<u32, 7> x3c_checkStore;
     s32 x58_currentKey;
     s32 x5c_initMessage;
     s32 x60_gameId;
@@ -112,7 +117,7 @@ class Endpoint {
   std::condition_variable m_issueCv;
   KawasedoChallenge m_joyBoot;
   FGBACallback m_callback;
-  u8 m_buffer[5];
+  Buffer m_buffer{};
   u8* m_readDstPtr = nullptr;
   u8* m_statusPtr = nullptr;
   u64 m_lastGCTick = 0;
@@ -123,9 +128,9 @@ class Endpoint {
   bool m_running = true;
 
   void clockSync();
-  void send(const u8* buffer);
-  size_t receive(u8* buffer);
-  size_t runBuffer(u8* buffer, std::unique_lock<std::mutex>& lk);
+  void send(Buffer buffer);
+  size_t receive(Buffer& buffer);
+  size_t runBuffer(Buffer& buffer, std::unique_lock<std::mutex>& lk);
   bool idleGetStatus(std::unique_lock<std::mutex>& lk);
   void transferProc();
   void transferWakeup(ThreadLocalEndpoint& endpoint, u8 status);
@@ -166,30 +171,30 @@ public:
   EJoyReturn GBAReset(u8* status);
 
   /** @brief Send READ command to GBA asynchronously.
-   *  @param dst Destination pointer for 4-byte packet of data.
+   *  @param dst Destination reference for 4-byte packet of data.
    *  @param status Destination pointer for EJStatFlags.
    *  @param callback Functor to execute when operation completes.
    *  @return GBA_READY if submitted, or GBA_NOT_READY if another operation in progress. */
-  EJoyReturn GBAReadAsync(u8* dst, u8* status, FGBACallback&& callback);
+  EJoyReturn GBAReadAsync(ReadWriteBuffer& dst, u8* status, FGBACallback&& callback);
 
   /** @brief Send READ command to GBA synchronously.
-   *  @param dst Destination pointer for 4-byte packet of data.
+   *  @param dst Destination reference for 4-byte packet of data.
    *  @param status Destination pointer for EJStatFlags.
    *  @return GBA_READY if submitted, or GBA_NOT_READY if another operation in progress. */
-  EJoyReturn GBARead(u8* dst, u8* status);
+  EJoyReturn GBARead(ReadWriteBuffer& dst, u8* status);
 
   /** @brief Send WRITE command to GBA asynchronously.
    *  @param src Source pointer for 4-byte packet of data. It is not required to keep resident.
    *  @param status Destination pointer for EJStatFlags.
    *  @param callback Functor to execute when operation completes.
    *  @return GBA_READY if submitted, or GBA_NOT_READY if another operation in progress. */
-  EJoyReturn GBAWriteAsync(const u8* src, u8* status, FGBACallback&& callback);
+  EJoyReturn GBAWriteAsync(ReadWriteBuffer src, u8* status, FGBACallback&& callback);
 
   /** @brief Send WRITE command to GBA synchronously.
    *  @param src Source pointer for 4-byte packet of data. It is not required to keep resident.
    *  @param status Destination pointer for EJStatFlags.
    *  @return GBA_READY if submitted, or GBA_NOT_READY if another operation in progress. */
-  EJoyReturn GBAWrite(const u8* src, u8* status);
+  EJoyReturn GBAWrite(ReadWriteBuffer src, u8* status);
 
   /** @brief Initiate JoyBoot sequence on this endpoint.
    *  @param paletteColor Palette for displaying logo in ROM header [0,6].
@@ -244,18 +249,18 @@ public:
   EJoyReturn GBAResetAsync(u8* status, FGBACallback&& callback);
 
   /** @brief Send READ command to GBA asynchronously.
-   *  @param dst Destination pointer for 4-byte packet of data.
+   *  @param dst Destination reference for 4-byte packet of data.
    *  @param status Destination pointer for EJStatFlags.
    *  @param callback Functor to execute when operation completes.
    *  @return GBA_READY if submitted, or GBA_NOT_READY if another operation in progress. */
-  EJoyReturn GBAReadAsync(u8* dst, u8* status, FGBACallback&& callback);
+  EJoyReturn GBAReadAsync(ReadWriteBuffer& dst, u8* status, FGBACallback&& callback);
 
   /** @brief Send WRITE command to GBA asynchronously.
-   *  @param src Source pointer for 4-byte packet of data. It is not required to keep resident.
+   *  @param src 4-byte packet of data. It is not required to keep resident.
    *  @param status Destination pointer for EJStatFlags.
    *  @param callback Functor to execute when operation completes.
    *  @return GBA_READY if submitted, or GBA_NOT_READY if another operation in progress. */
-  EJoyReturn GBAWriteAsync(const u8* src, u8* status, FGBACallback&& callback);
+  EJoyReturn GBAWriteAsync(ReadWriteBuffer src, u8* status, FGBACallback&& callback);
 
   /** @brief Get virtual SI channel assigned to this endpoint.
    *  @return SI channel */
