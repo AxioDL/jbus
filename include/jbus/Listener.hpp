@@ -1,12 +1,15 @@
 #pragma once
 
-#include "Common.hpp"
-#include "Socket.hpp"
-#include <thread>
-#include <queue>
+#include <cstdint>
+#include <memory>
 #include <mutex>
+#include <queue>
+#include <thread>
+
+#include "jbus/Socket.hpp"
 
 namespace jbus {
+class Endpoint;
 
 /** Server interface for accepting incoming connections from GBA emulator instances. */
 class Listener {
@@ -33,6 +36,7 @@ public:
    *  @return Endpoint instance, ready to issue commands. */
   std::unique_ptr<Endpoint> accept();
 
+  Listener();
   ~Listener();
 };
 

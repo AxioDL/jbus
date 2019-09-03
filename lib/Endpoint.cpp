@@ -1,6 +1,12 @@
 #include "jbus/Endpoint.hpp"
 
+#include <cstring>
+
 #define LOG_TRANSFER 0
+
+#if LOG_TRANSFER
+#include <cstdio>
+#endif
 
 namespace jbus {
 

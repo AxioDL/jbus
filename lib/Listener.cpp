@@ -1,7 +1,13 @@
 #include "jbus/Listener.hpp"
+
+#include "jbus/Common.hpp"
 #include "jbus/Endpoint.hpp"
 
 #define LOG_LISTENER 0
+
+#if LOG_LISTENER
+#include <cstdio>
+#endif
 
 namespace jbus {
 
@@ -93,6 +99,8 @@ std::unique_ptr<Endpoint> Listener::accept() {
   }
   return {};
 }
+
+Listener::Listener() = default;
 
 Listener::~Listener() { stop(); }
 
