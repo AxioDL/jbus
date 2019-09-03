@@ -42,11 +42,10 @@ void IPAddress::resolve(const std::string& address) noexcept {
       m_valid = true;
     } else {
       /* Not a valid address, try to convert it as a host name */
-      addrinfo hints;
-      memset(&hints, 0, sizeof(hints));
+      addrinfo hints = {};
       hints.ai_family = AF_INET;
-      addrinfo* result = NULL;
-      if (getaddrinfo(address.c_str(), NULL, &hints, &result) == 0) {
+      addrinfo* result = nullptr;
+      if (getaddrinfo(address.c_str(), nullptr, &hints, &result) == 0) {
         if (result) {
           addr = reinterpret_cast<sockaddr_in*>(result->ai_addr)->sin_addr;
           freeaddrinfo(result);
@@ -61,8 +60,7 @@ void IPAddress::resolve(const std::string& address) noexcept {
 uint32_t IPAddress::toInteger() const noexcept { return ntohl(m_address); }
 
 static sockaddr_in createAddress(uint32_t address, unsigned short port) {
-  sockaddr_in addr;
-  memset(&addr, 0, sizeof(addr));
+  sockaddr_in addr = {};
   addr.sin_addr.s_addr = htonl(address);
   addr.sin_family = AF_INET;
   addr.sin_port = htons(port);
