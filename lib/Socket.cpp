@@ -1,13 +1,19 @@
 #include "jbus/Socket.hpp"
 
+#include <cstdio>
+#include <cstring>
+
 #ifndef _WIN32
-#include <sys/socket.h>
+#include <cerrno>
+
+#include <arpa/inet.h>
+#include <fcntl.h>
+#include <netdb.h>
 #include <netinet/in.h>
 #include <netinet/tcp.h>
-#include <arpa/inet.h>
-#include <netdb.h>
+#include <sys/socket.h>
+#include <sys/types.h>
 #include <unistd.h>
-#include <cerrno>
 #else
 #include <WinSock2.h>
 #include <Ws2tcpip.h>
