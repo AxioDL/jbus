@@ -68,7 +68,7 @@ void Listener::listenerProc() {
 #endif
     }
     if (acceptData && acceptClock) {
-      std::unique_lock<std::mutex> lk(m_queueLock);
+      std::unique_lock lk{m_queueLock};
       m_endpointQueue.push(std::make_unique<Endpoint>(0, std::move(acceptData), std::move(acceptClock)));
     }
     WaitGCTicks(GetGCTicksPerSec());
@@ -94,14 +94,14 @@ void Listener::stop() {
 }
 
 std::unique_ptr<Endpoint> Listener::accept() {
-  std::unique_lock<std::mutex> lk(m_queueLock);
-  if (m_endpointQueue.size()) {
-    std::unique_ptr<Endpoint> ret;
-    ret = std::move(m_endpointQueue.front());
-    m_endpointQueue.pop();
-    return ret;
+  std::unique_lock lk{m_queueLock};
+  if (m_endpointQueue.empty()) {
+    return nullptr;
   }
-  return {};
+
+  auto ret = std::move(m_endpointQueue.front());
+  m_endpointQueue.pop();
+  return ret;
 }
 
 Listener::Listener() = default;
