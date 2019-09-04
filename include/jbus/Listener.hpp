@@ -1,6 +1,5 @@
 #pragma once
 
-#include <cstdint>
 #include <memory>
 #include <mutex>
 #include <queue>
@@ -19,9 +18,6 @@ class Listener {
   std::mutex m_queueLock;
   std::queue<std::unique_ptr<Endpoint>> m_endpointQueue;
   bool m_running = false;
-
-  static const uint32_t DataPort = 0xd6ba;
-  static const uint32_t ClockPort = 0xc10c;
 
   void listenerProc();
 
