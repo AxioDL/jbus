@@ -1,6 +1,6 @@
 #include "jbus/Endpoint.hpp"
 
-#include <cstring>
+#include <algorithm>
 
 #define LOG_TRANSFER 0
 
@@ -361,18 +361,20 @@ void Endpoint::clockSync() {
     m_running = false;
 }
 
-void Endpoint::send(const u8* buffer) {
+void Endpoint::send(Buffer buffer) {
   m_lastCmd = buffer[0];
 
   net::Socket::EResult result;
   size_t sentBytes;
-  if (m_lastCmd == CMD_WRITE)
-    result = m_dataSocket.send(buffer, 5, sentBytes);
-  else
-    result = m_dataSocket.send(buffer, 1, sentBytes);
+  if (m_lastCmd == CMD_WRITE) {
+    result = m_dataSocket.send(buffer.data(), buffer.size(), sentBytes);
+  } else {
+    result = m_dataSocket.send(buffer.data(), 1, sentBytes);
+  }
 
-  if (m_lastCmd != CMD_STATUS)
+  if (m_lastCmd != CMD_STATUS) {
     m_booted = true;
+  }
 
   if (result != net::Socket::EResult::OK) {
     m_running = false;
@@ -384,30 +386,31 @@ void Endpoint::send(const u8* buffer) {
 #endif
 }
 
-size_t Endpoint::receive(u8* buffer) {
+size_t Endpoint::receive(Buffer& buffer) {
   if (!m_dataSocket) {
     m_running = false;
-    return 5;
+    return buffer.size();
   }
 
   size_t recvBytes = 0;
-  net::Socket::EResult result = m_dataSocket.recv(buffer, 5, recvBytes);
+  const net::Socket::EResult result = m_dataSocket.recv(buffer.data(), buffer.size(), recvBytes);
   if (result == net::Socket::EResult::Error) {
     m_running = false;
-    return 5;
+    return buffer.size();
   }
 
-  if (recvBytes > 5)
-    recvBytes = 5;
+  if (recvBytes > buffer.size()) {
+    recvBytes = buffer.size();
+  }
 
 #if LOG_TRANSFER
   if (recvBytes > 0) {
     if (m_lastCmd == CMD_STATUS || m_lastCmd == CMD_RESET) {
-      printf("Stat/Reset [< %02x%02x%02x%02x%02x] (%lu)\n", (u8)buffer[0], (u8)buffer[1], (u8)buffer[2], (u8)buffer[3],
-             (u8)buffer[4], recvBytes);
+      printf("Stat/Reset [< %02x%02x%02x%02x%02x] (%lu)\n", buffer[0], buffer[1], buffer[2], buffer[3], buffer[4],
+             recvBytes);
     } else {
-      printf("Receive [< %02x%02x%02x%02x%02x] (%lu)\n", (u8)buffer[0], (u8)buffer[1], (u8)buffer[2], (u8)buffer[3],
-             (u8)buffer[4], recvBytes);
+      printf("Receive [< %02x%02x%02x%02x%02x] (%lu)\n", buffer[0], buffer[1], buffer[2], buffer[3], buffer[4],
+             recvBytes);
     }
   }
 #endif
@@ -415,23 +418,22 @@ size_t Endpoint::receive(u8* buffer) {
   return recvBytes;
 }
 
-size_t Endpoint::runBuffer(u8* buffer, std::unique_lock<std::mutex>& lk) {
-  u8 tmpBuffer[5];
+size_t Endpoint::runBuffer(Buffer& buffer, std::unique_lock<std::mutex>& lk) {
+  Buffer tmpBuffer = buffer;
 
-  memmove(tmpBuffer, buffer, 5);
   lk.unlock();
   clockSync();
   send(tmpBuffer);
-  size_t receivedBytes = receive(tmpBuffer);
+  const size_t receivedBytes = receive(tmpBuffer);
   lk.lock();
-  memmove(buffer, tmpBuffer, 5);
 
+  buffer = tmpBuffer;
   return receivedBytes;
 }
 
 bool Endpoint::idleGetStatus(std::unique_lock<std::mutex>& lk) {
-  u8 buffer[] = {CMD_STATUS, 0, 0, 0, 0};
-  return runBuffer(buffer, lk);
+  Buffer buffer{u8(CMD_STATUS), 0, 0, 0, 0};
+  return runBuffer(buffer, lk) != 0;
 }
 
 void Endpoint::transferProc() {
@@ -461,10 +463,12 @@ void Endpoint::transferProc() {
           *m_statusPtr = m_buffer[0];
         break;
       case CMD_READ:
-        if (m_statusPtr)
+        if (m_statusPtr != nullptr) {
           *m_statusPtr = m_buffer[4];
-        if (m_readDstPtr)
-          memmove(m_readDstPtr, m_buffer, 4);
+        }
+        if (m_readDstPtr != nullptr) {
+          std::copy(m_buffer.cbegin(), m_buffer.cbegin() + 4, m_readDstPtr);
+        }
         break;
       default:
         break;
@@ -600,17 +604,19 @@ EJoyReturn Endpoint::GBAReset(u8* status) {
   return GBA_READY;
 }
 
-EJoyReturn Endpoint::GBAReadAsync(u8* dst, u8* status, FGBACallback&& callback) {
-  if (!m_running)
+EJoyReturn Endpoint::GBAReadAsync(ReadWriteBuffer& dst, u8* status, FGBACallback&& callback) {
+  if (!m_running) {
     return GBA_NOT_READY;
+  }
 
   std::unique_lock<std::mutex> lk(m_syncLock);
-  if (m_cmdIssued)
+  if (m_cmdIssued) {
     return GBA_NOT_READY;
+  }
 
   m_cmdIssued = true;
   m_statusPtr = status;
-  m_readDstPtr = dst;
+  m_readDstPtr = dst.data();
   m_buffer[0] = CMD_READ;
   m_callback = std::move(callback);
 
@@ -619,17 +625,19 @@ EJoyReturn Endpoint::GBAReadAsync(u8* dst, u8* status, FGBACallback&& callback) 
   return GBA_READY;
 }
 
-EJoyReturn Endpoint::GBARead(u8* dst, u8* status) {
-  if (!m_running)
+EJoyReturn Endpoint::GBARead(ReadWriteBuffer& dst, u8* status) {
+  if (!m_running) {
     return GBA_NOT_READY;
+  }
 
   std::unique_lock<std::mutex> lk(m_syncLock);
-  if (m_cmdIssued)
+  if (m_cmdIssued) {
     return GBA_NOT_READY;
+  }
 
   m_cmdIssued = true;
   m_statusPtr = status;
-  m_readDstPtr = dst;
+  m_readDstPtr = dst.data();
   m_buffer[0] = CMD_READ;
   m_callback = bindSync();
 
@@ -639,19 +647,22 @@ EJoyReturn Endpoint::GBARead(u8* dst, u8* status) {
   return GBA_READY;
 }
 
-EJoyReturn Endpoint::GBAWriteAsync(const u8* src, u8* status, FGBACallback&& callback) {
-  if (!m_running)
+EJoyReturn Endpoint::GBAWriteAsync(ReadWriteBuffer src, u8* status, FGBACallback&& callback) {
+  if (!m_running) {
     return GBA_NOT_READY;
+  }
 
   std::unique_lock<std::mutex> lk(m_syncLock);
-  if (m_cmdIssued)
+  if (m_cmdIssued) {
     return GBA_NOT_READY;
+  }
 
   m_cmdIssued = true;
   m_statusPtr = status;
   m_buffer[0] = CMD_WRITE;
-  for (int i = 0; i < 4; ++i)
+  for (size_t i = 0; i < src.size(); ++i) {
     m_buffer[i + 1] = src[i];
+  }
   m_callback = std::move(callback);
 
   m_issueCv.notify_one();
@@ -659,19 +670,22 @@ EJoyReturn Endpoint::GBAWriteAsync(const u8* src, u8* status, FGBACallback&& cal
   return GBA_READY;
 }
 
-EJoyReturn Endpoint::GBAWrite(const u8* src, u8* status) {
-  if (!m_running)
+EJoyReturn Endpoint::GBAWrite(ReadWriteBuffer src, u8* status) {
+  if (!m_running) {
     return GBA_NOT_READY;
+  }
 
   std::unique_lock<std::mutex> lk(m_syncLock);
-  if (m_cmdIssued)
+  if (m_cmdIssued) {
     return GBA_NOT_READY;
+  }
 
   m_cmdIssued = true;
   m_statusPtr = status;
   m_buffer[0] = CMD_WRITE;
-  for (int i = 0; i < 4; ++i)
+  for (size_t i = 0; i < src.size(); ++i) {
     m_buffer[i + 1] = src[i];
+  }
   m_callback = bindSync();
 
   m_issueCv.notify_one();
@@ -739,28 +753,29 @@ EJoyReturn ThreadLocalEndpoint::GBAResetAsync(u8* status, FGBACallback&& callbac
   return GBA_READY;
 }
 
-EJoyReturn ThreadLocalEndpoint::GBAReadAsync(u8* dst, u8* status, FGBACallback&& callback) {
+EJoyReturn ThreadLocalEndpoint::GBAReadAsync(ReadWriteBuffer& dst, u8* status, FGBACallback&& callback) {
   if (!m_ep.m_running || m_ep.m_cmdIssued)
     return GBA_NOT_READY;
 
   m_ep.m_cmdIssued = true;
   m_ep.m_statusPtr = status;
-  m_ep.m_readDstPtr = dst;
+  m_ep.m_readDstPtr = dst.data();
   m_ep.m_buffer[0] = Endpoint::CMD_READ;
   m_ep.m_callback = std::move(callback);
 
   return GBA_READY;
 }
 
-EJoyReturn ThreadLocalEndpoint::GBAWriteAsync(const u8* src, u8* status, FGBACallback&& callback) {
+EJoyReturn ThreadLocalEndpoint::GBAWriteAsync(ReadWriteBuffer src, u8* status, FGBACallback&& callback) {
   if (!m_ep.m_running || m_ep.m_cmdIssued)
     return GBA_NOT_READY;
 
   m_ep.m_cmdIssued = true;
   m_ep.m_statusPtr = status;
   m_ep.m_buffer[0] = Endpoint::CMD_WRITE;
-  for (int i = 0; i < 4; ++i)
+  for (size_t i = 0; i < src.size(); ++i) {
     m_ep.m_buffer[i + 1] = src[i];
+  }
   m_ep.m_callback = std::move(callback);
 
   return GBA_READY;
