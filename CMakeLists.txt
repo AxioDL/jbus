@@ -1,8 +1,10 @@
 cmake_minimum_required(VERSION 3.10 FATAL_ERROR) # because of c++17
 project(jbus)
 
-set(CMAKE_CXX_STANDARD 17)
-set(CMAKE_CXX_STANDARD_REQUIRED ON)
+if (NOT MSVC)
+  set(CMAKE_CXX_STANDARD 20)
+  set(CMAKE_CXX_STANDARD_REQUIRED ON)
+endif()
 
 if(WIN32)
 set(JBUS_PLAT_LIBS Ws2_32)
