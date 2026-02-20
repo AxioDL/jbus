@@ -8,7 +8,7 @@ endif()
 
 if(WIN32)
 set(JBUS_PLAT_LIBS Ws2_32)
-elseif(UNIX AND NOT APPLE)
+elseif(UNIX AND NOT APPLE AND NOT ANDROID)
 set(JBUS_PLAT_LIBS pthread)
 endif()
 
